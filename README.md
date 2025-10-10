@@ -7,11 +7,9 @@ mostly developed with Go, but also with other languages and tools used for pract
 Each subfolder inside this repository represents a separate project with its own structure,  
 README file, and Git commit history.
 
-📚 Examples of future contents:
+Examples of future contents:
 - bookmanager-go
 - task-tracker
-
----
 
 **Purpose:**  
 To document my learning progress, demonstrate practical implementations, and explore different development patterns.
