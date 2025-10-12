@@ -3,16 +3,32 @@ package service
 import (
 	"log"
 
-	"gorm.io/driver/sqlite"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 )
 
-// InitDB opens a SQLite database connection using GORM.
-func InitDB() *gorm.DB {
-	db, err := gorm.Open(sqlite.Open("books.db"), &gorm.Config{})
-	if err != nil {
-		log.Fatal("failed to connect database:", err)
-	}
+// Interface for database connections.
+type DatabaseConnector interface {
+	Connect() (*gorm.DB, error)
+}
 
+// Concrete implementation of DatabaseConnector for SQLite.
+type SQLiteConnector struct {
+	DBPath string
+}
+
+// Establishes a connection to the SQLite database file.
+func (s *SQLiteConnector) Connect() (*gorm.DB, error) {
+	db, err := gorm.Open(sqlite.Open(s.DBPath), &gorm.Config{})
+	return db, err
+}
+
+// High-level initialization function (supports dependency injection).
+func InitDB(d DatabaseConnector) *gorm.DB {
+	db, err := d.Connect()
+	if err != nil {
+		log.Fatalf("Failed to connect database: %v", err)
+	}
+	log.Println("Success: connected to database.")
 	return db
 }
