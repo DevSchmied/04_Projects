@@ -27,7 +27,7 @@ func (s *SQLiteConnector) Connect() (*gorm.DB, error) {
 func InitDB(d DatabaseConnector) *gorm.DB {
 	db, err := d.Connect()
 	if err != nil {
-		log.Fatalf("Failed to connect database: %v", err)
+		log.Panicf("Failed to connect database: %v", err)
 	}
 	log.Println("Success: connected to database.")
 	return db
