@@ -22,9 +22,10 @@ It allows users to add, edit, delete, and search for books in a local database.
 
 
 ### Architecture Overview
-The project follows a **modular, layered design** inspired by **Clean Architecture**:
+The project follows a **modular, layered design** inspired by **Clean Architecture**  
+and provides a **RESTful API** for managing book data.
 
 
 ### Goal
-To practice **clean architecture** and build a modular, testable CRUD web application in Go  
-that demonstrates SOLID design, interface-driven development, and structured testing.
+To practice **Clean Architecture** and build a modular, testable CRUD web application in Go  
+that demonstrates **SOLID design**, **interface-driven development**, and **structured testing**.
