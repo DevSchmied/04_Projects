@@ -1,6 +1,6 @@
 # BookManager-Go
 
-A book management web application built with Go.  
+A book management web application built with **Go**.  
 It allows users to add, edit, delete, and search for books in a local database.
 
 
@@ -10,13 +10,15 @@ It allows users to add, edit, delete, and search for books in a local database.
 - Simple, responsive web interface (HTML + Bootstrap)  
 - Persistent storage via **SQLite** (optionally MySQL)  
 - Modular architecture with **SOLID principles**  
-- Unit tests following **AAA (Arrange–Act–Assert)** pattern  
+- Unit tests based on **AAA (Arrange–Act–Assert)** and **FIRST** testing principles  
 
 
 ### Tech Stack
-- Go (Gin framework)  
-- HTML / Bootstrap  
-- MySQL or SQLite  
+- **Language:** Go (Gin framework)  
+- **Frontend:** HTML / Bootstrap  
+- **Database:** SQLite (or MySQL)  
+- **ORM:** GORM  
+- **Testing:** Go `testing` package with mocks and table-driven tests  
 
 
 ### Architecture Overview
@@ -24,4 +26,5 @@ The project follows a **modular, layered design** inspired by **Clean Architectu
 
 
 ### Goal
-To practice clean architecture in Go and build a full CRUD web application.
+To practice **clean architecture** and build a modular, testable CRUD web application in Go  
+that demonstrates SOLID design, interface-driven development, and structured testing.
