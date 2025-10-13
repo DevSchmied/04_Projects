@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bookmanager-go/internal/model"
 	"bookmanager-go/internal/service"
 	"fmt"
 	"log"
@@ -21,4 +22,10 @@ func main() {
 	defer sqlDB.Close()
 
 	fmt.Printf("Database initialized: %T\n", db)
+
+	// Run AutoMigrate to create the Book table if it doesn't exist
+	if err := db.AutoMigrate(&model.Book{}); err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
+
 }
