@@ -2,7 +2,9 @@ package controller
 
 import (
 	"bookmanager-go/internal/model"
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -35,7 +37,34 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	c.JSON(http.StatusOK, books)
 }
 
-func (bc *BookController) GetBookByID(c *gin.Context) {}
-func (bc *BookController) AddBook(c *gin.Context)     {}
-func (bc *BookController) UpdateBook(c *gin.Context)  {}
-func (bc *BookController) DeleteBook(c *gin.Context)  {}
+// GetBookByID returns a single book by its ID as JSON.
+func (bc *BookController) GetBookByID(c *gin.Context) {
+	idParam := c.Param("id")
+	var book model.Book
+
+	// Prove that the ID is a valid integer
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		return
+	}
+	// Ensure that the ID is greater than zero
+	if id <= 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid book ID"})
+		return
+	}
+
+	if err := bc.DB.First(&book, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Book not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		}
+		return
+	}
+	c.JSON(http.StatusOK, book)
+}
+
+func (bc *BookController) AddBook(c *gin.Context)    {}
+func (bc *BookController) UpdateBook(c *gin.Context) {}
+func (bc *BookController) DeleteBook(c *gin.Context) {}
