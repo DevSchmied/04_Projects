@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bookmanager-go/internal/controller"
 	"bookmanager-go/internal/model"
 	"bookmanager-go/internal/server"
 	"bookmanager-go/internal/service"
 	"fmt"
 	"log"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -29,6 +32,11 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
-	// start the web server
-	server.StartWebServer(db)
+	router := gin.Default() // Initialize Gin router
+	bookController := controller.BookController{DB: db}
+	// Start the web server with injected router, controller, and address
+	if err := server.StartWebServer(router, bookController, "localhost:8080"); err != nil {
+		log.Panicf("Server failed: %v", err)
+	}
+
 }
