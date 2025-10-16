@@ -2,6 +2,7 @@ package main
 
 import (
 	"bookmanager-go/internal/model"
+	"bookmanager-go/internal/server"
 	"bookmanager-go/internal/service"
 	"fmt"
 	"log"
@@ -28,4 +29,6 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
+	// start the web server
+	server.StartWebServer(db)
 }
