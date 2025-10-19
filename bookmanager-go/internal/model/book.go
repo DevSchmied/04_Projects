@@ -19,7 +19,7 @@ type Book struct {
 	Year      int            `json:"year"`
 	Genre     string         `json:"genre"`
 	ISBN      string         `json:"isbn"`
-	Rating    int            `json:"rating"`
+	Rating    float64        `json:"rating"`
 	Read      bool           `json:"read"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`

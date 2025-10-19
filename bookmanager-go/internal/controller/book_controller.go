@@ -3,9 +3,11 @@ package controller
 import (
 	"bookmanager-go/internal/model"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -80,6 +82,60 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	})
 }
 
-func (bc *BookController) AddBook(c *gin.Context)    {}
+// AddBook handles HTML form submission to create a new book.
+func (bc *BookController) AddBook(c *gin.Context) {
+	// Read form input
+	title := c.PostForm("title")
+	author := c.PostForm("author")
+	yearStr := c.PostForm("year")
+	genre := c.PostForm("genre")
+	isbn := c.PostForm("isbn")
+	ratingStr := c.PostForm("rating")
+	readStr := c.PostForm("read")
+
+	// Validate required fields
+	if title == "" {
+		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
+			"error": "Title is required.",
+		})
+		return
+	}
+
+	// Convert numeric and boolean fields
+	year, _ := strconv.Atoi(yearStr)
+	rating, _ := strconv.ParseFloat(ratingStr, 64)
+
+	// Round to one decimal place
+	ratingStr = fmt.Sprintf("%.1f", rating)
+	rating, _ = strconv.ParseFloat(ratingStr, 64)
+
+	read := false
+	readStr = strings.ToLower(readStr)
+	if readStr == "yes" || readStr == "true" || readStr == "on" {
+		read = true
+	}
+
+	// Create book object
+	book := &model.Book{
+		Title:  title,
+		Author: author,
+		Year:   year,
+		Genre:  genre,
+		ISBN:   isbn,
+		Rating: rating,
+		Read:   read,
+	}
+
+	// Save to database
+	if err := bc.DB.Create(&book).Error; err != nil {
+		log.Printf("Error saving book: %v\n", err)
+		c.String(http.StatusInternalServerError, "Failed to save book")
+		return
+	}
+
+	// Redirect to list page
+	c.Redirect(http.StatusSeeOther, "/books")
+}
+
 func (bc *BookController) UpdateBook(c *gin.Context) {}
 func (bc *BookController) DeleteBook(c *gin.Context) {}
