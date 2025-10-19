@@ -3,6 +3,7 @@ package controller
 import (
 	"bookmanager-go/internal/model"
 	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -30,10 +31,13 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 // GetAllBooks renders an HTML page listing all books in the database.
 func (bc *BookController) GetAllBooks(c *gin.Context) {
 	var books []model.Book
+	// Try to load all books from the database
 	if err := bc.DB.Find(&books).Error; err != nil {
+		log.Printf("Failed to retrieve books: %v\n", err)
 		c.String(http.StatusInternalServerError, "Failed to retrieve books")
 		return
 	}
+	// Render the list of books using an HTML template
 	c.HTML(http.StatusOK, "books_list.html", gin.H{
 		"Books": books,
 	})
@@ -47,23 +51,30 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	// Prove that the ID is a valid integer
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
+		log.Printf("Invalid book ID format: %v\n", err)
 		c.String(http.StatusBadRequest, "Invalid book ID format")
 		return
 	}
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
+		log.Printf("Invalid book ID value: %v\n", err)
 		c.String(http.StatusBadRequest, "Invalid book ID value")
 		return
 	}
 
+	// Retrieve book from database
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("Book with ID %d not found\n", id)
 			c.String(http.StatusNotFound, "Book not found")
 		} else {
+			log.Printf("Error fetching book with ID %d: %v\n", id, err)
 			c.String(http.StatusInternalServerError, "Failed to fetch book")
 		}
 		return
 	}
+
+	// Render book details in an HTML template
 	c.HTML(http.StatusOK, "book_details.html", gin.H{
 		"Book": book,
 	})
