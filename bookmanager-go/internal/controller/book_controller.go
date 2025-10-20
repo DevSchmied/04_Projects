@@ -94,7 +94,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	ratingStr := c.PostForm("rating")
 	readStr := c.PostForm("read")
 
-	// Validate required fields
+	// Validate required field
 	if title == "" {
 		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
 			"error": "Title is required.",
@@ -179,6 +179,16 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	})
 }
 
-func (bc *BookController) UpdateBook(c *gin.Context) {}
+func (bc *BookController) UpdateBook(c *gin.Context) {
+	// Read form input
+	idParam := c.PostForm("id")
+	title := c.PostForm("title")
+	author := c.PostForm("author")
+	yearStr := c.PostForm("year")
+	genre := c.PostForm("genre")
+	isbn := c.PostForm("isbn")
+	ratingStr := c.PostForm("rating")
+	readStr := c.PostForm("read")
+}
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
