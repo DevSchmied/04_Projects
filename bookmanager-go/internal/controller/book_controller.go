@@ -184,12 +184,9 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	idParam := c.PostForm("id")
 	title := c.PostForm("title")
 	author := c.PostForm("author")
-	_ = author
 	yearStr := c.PostForm("year")
 	genre := c.PostForm("genre")
-	_ = genre
 	isbn := c.PostForm("isbn")
-	_ = isbn
 	ratingStr := c.PostForm("rating")
 	readStr := c.PostForm("read")
 
@@ -210,17 +207,24 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	ratingStr = fmt.Sprintf("%.1f", rating)
 	rating, _ = strconv.ParseFloat(ratingStr, 64)
 
-	_ = year
-	_ = rating
-	_ = id
-
 	read := false
 	readStr = strings.ToLower(readStr)
 	if readStr == "yes" || readStr == "true" || readStr == "on" {
 		read = true
 	}
 
-	_ = read
+	book := &model.Book{
+		ID:     uint(id),
+		Title:  title,
+		Author: author,
+		Year:   year,
+		Genre:  genre,
+		ISBN:   isbn,
+		Rating: rating,
+		Read:   read,
+	}
+
+	_ = book
 
 }
 
