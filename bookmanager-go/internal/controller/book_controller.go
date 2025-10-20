@@ -22,11 +22,12 @@ type BookController struct {
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
 	{
-		books.GET("/", bc.GetAllBooks)             // Read all
-		books.GET("/:id", bc.GetBookByID)          // Read one
-		books.POST("/add", bc.AddBook)             // Create
-		books.PUT("/:id/edit", bc.UpdateBook)      // Update
-		books.DELETE("/delete/:id", bc.DeleteBook) // Delete
+		books.GET("/", bc.GetAllBooks)                     // Read all
+		books.GET("/:id", bc.GetBookByID)                  // Read one
+		books.POST("/add", bc.AddBook)                     // Create
+		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
+		books.POST("/update/:id", bc.UpdateBook)           // Update
+		books.DELETE("/delete/:id", bc.DeleteBook)         // Delete
 	}
 }
 
@@ -137,5 +138,9 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/books")
 }
 
+func (bc *BookController) FindBookForUpdate(c *gin.Context) {
+
+}
 func (bc *BookController) UpdateBook(c *gin.Context) {}
+
 func (bc *BookController) DeleteBook(c *gin.Context) {}
