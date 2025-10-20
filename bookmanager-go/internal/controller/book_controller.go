@@ -170,6 +170,9 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
+	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+		"Book": book,
+	})
 }
 
 func (bc *BookController) UpdateBook(c *gin.Context) {}
