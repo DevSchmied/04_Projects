@@ -138,9 +138,20 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/books")
 }
 
+// FindBookForUpdate searches a book by ID or title before updating it.
 func (bc *BookController) FindBookForUpdate(c *gin.Context) {
+	idParam := c.Param("id")
+	title := c.Param("title")
 
+	if idParam == "" && title == "" {
+		log.Println("ID or title is required.")
+		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
+			"error": "Please provide either ID or title to search.",
+		})
+		return
+	}
 }
+
 func (bc *BookController) UpdateBook(c *gin.Context) {}
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
