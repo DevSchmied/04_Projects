@@ -169,6 +169,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Internal error while searching for book")
 		return
 	}
+
 }
 
 func (bc *BookController) UpdateBook(c *gin.Context) {}
