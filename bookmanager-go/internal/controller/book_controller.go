@@ -182,20 +182,16 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Read form input
 	idParam := c.PostForm("id")
-	_ = idParam
 	title := c.PostForm("title")
 	author := c.PostForm("author")
 	_ = author
 	yearStr := c.PostForm("year")
-	_ = yearStr
 	genre := c.PostForm("genre")
 	_ = genre
 	isbn := c.PostForm("isbn")
 	_ = isbn
 	ratingStr := c.PostForm("rating")
-	_ = ratingStr
 	readStr := c.PostForm("read")
-	_ = readStr
 
 	// Validate required field
 	if title == "" {
@@ -217,6 +213,14 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	_ = year
 	_ = rating
 	_ = id
+
+	read := false
+	readStr = strings.ToLower(readStr)
+	if readStr == "yes" || readStr == "true" || readStr == "on" {
+		read = true
+	}
+
+	_ = read
 
 }
 
