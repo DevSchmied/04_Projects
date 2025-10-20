@@ -158,7 +158,17 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
-	_ = id
+	var book model.Book
+	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("Book not found: %v\n", err)
+			c.String(http.StatusNotFound, "Book not found")
+			return
+		}
+		log.Printf("Error while searching for book: %v\n", err)
+		c.String(http.StatusInternalServerError, "Internal error while searching for book")
+		return
+	}
 }
 
 func (bc *BookController) UpdateBook(c *gin.Context) {}
