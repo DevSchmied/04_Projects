@@ -198,7 +198,7 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 		return
 	}
 
-	// Convert numeric fields
+	// Convert numeric and boolean fields
 	id, _ := strconv.Atoi(idParam)
 	year, _ := strconv.Atoi(yearStr)
 	rating, _ := strconv.ParseFloat(ratingStr, 64)
@@ -207,12 +207,14 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	ratingStr = fmt.Sprintf("%.1f", rating)
 	rating, _ = strconv.ParseFloat(ratingStr, 64)
 
+	// Normalize read flag
 	read := false
 	readStr = strings.ToLower(readStr)
 	if readStr == "yes" || readStr == "true" || readStr == "on" {
 		read = true
 	}
 
+	// Create book object
 	book := &model.Book{
 		ID:     uint(id),
 		Title:  title,
@@ -224,7 +226,12 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 		Read:   read,
 	}
 
-	_ = book
+	// Update database record
+	if err := bc.DB.Model(&model.Book{}).Where("id = ?", id).Updates(book).Error; err != nil {
+		log.Printf("Error updating book ID %d: %v\n", id, err)
+		c.String(http.StatusInternalServerError, "Failed to update book")
+		return
+	}
 
 }
 
