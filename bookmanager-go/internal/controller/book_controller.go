@@ -233,6 +233,8 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 		return
 	}
 
+	// Redirect on success
+	c.Redirect(http.StatusSeeOther, fmt.Sprintf("/books/%d", id))
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
