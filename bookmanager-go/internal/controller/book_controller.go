@@ -204,6 +204,20 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 		})
 		return
 	}
+
+	// Convert numeric fields
+	id, _ := strconv.Atoi(idParam)
+	year, _ := strconv.Atoi(yearStr)
+	rating, _ := strconv.ParseFloat(ratingStr, 64)
+
+	// Round to one decimal place
+	ratingStr = fmt.Sprintf("%.1f", rating)
+	rating, _ = strconv.ParseFloat(ratingStr, 64)
+
+	_ = year
+	_ = rating
+	_ = id
+
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
