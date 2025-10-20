@@ -150,6 +150,15 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		})
 		return
 	}
+
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		log.Printf("Invalid book ID format: %v\n", err)
+		c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
+		return
+	}
+
+	_ = id
 }
 
 func (bc *BookController) UpdateBook(c *gin.Context) {}
