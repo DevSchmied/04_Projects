@@ -143,6 +143,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	idParam := c.Param("id")
 	title := c.Param("title")
 
+	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
 		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
@@ -151,6 +152,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
+	// Convert ID from string to integer
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid book ID format: %v\n", err)
@@ -159,6 +161,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	}
 
 	var book model.Book
+	// Search for a book by ID or title in the database
 	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book not found: %v\n", err)
@@ -170,6 +173,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
+	// Render the edit page with the found book data
 	c.HTML(http.StatusOK, "book_edit.html", gin.H{
 		"Book": book,
 	})
