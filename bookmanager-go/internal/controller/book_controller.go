@@ -152,12 +152,19 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
-	// Convert ID from string to integer
-	id, err := strconv.Atoi(idParam)
-	if err != nil {
-		log.Printf("Invalid book ID format: %v\n", err)
-		c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
-		return
+	var (
+		id  int
+		err error
+	)
+
+	// Convert ID from string to integer (only if provided)
+	if idParam != "" {
+		id, err = strconv.Atoi(idParam)
+		if err != nil {
+			log.Printf("Invalid book ID format: %v\n", err)
+			c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
+			return
+		}
 	}
 
 	var book model.Book
@@ -179,6 +186,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	})
 }
 
+// UpdateBook updates an existing book in the database based on form input.
 func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Read form input
 	idParam := c.PostForm("id")
