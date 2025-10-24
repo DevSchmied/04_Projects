@@ -245,4 +245,7 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, fmt.Sprintf("/books/%d", id))
 }
 
+// FindBookForDelete searches for a book by ID or title before deletion.
+func (bc *BookController) FindBookForDelete(c *gin.Context) {}
+
 func (bc *BookController) DeleteBook(c *gin.Context) {}
