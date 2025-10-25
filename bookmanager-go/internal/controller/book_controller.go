@@ -246,6 +246,11 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 }
 
 // FindBookForDelete searches for a book by ID or title before deletion.
-func (bc *BookController) FindBookForDelete(c *gin.Context) {}
+func (bc *BookController) FindBookForDelete(c *gin.Context) {
+	idParam := c.Param("id")
+	_ = idParam
+	title := c.Param("title")
+	_ = title
+}
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
