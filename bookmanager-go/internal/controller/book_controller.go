@@ -260,6 +260,23 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		})
 		return
 	}
+
+	var (
+		id  int
+		err error
+	)
+	_ = id
+
+	// Convert ID from string to integer (only if provided)
+	if idParam != "" {
+		id, err = strconv.Atoi(idParam)
+		if err != nil {
+			log.Printf("Invalid book ID format: %v\n", err)
+			c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
+			return
+		}
+	}
+
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
