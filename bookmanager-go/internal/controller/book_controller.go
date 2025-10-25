@@ -277,6 +277,19 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		}
 	}
 
+	var book model.Book
+	// Search for a book by ID or title in the database
+	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("Book not found: %v\n", err)
+			c.String(http.StatusNotFound, "Book not found")
+			return
+		}
+		log.Printf("Error while searching for book: %v\n", err)
+		c.String(http.StatusInternalServerError, "Internal error while searching for book")
+		return
+	}
+
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
