@@ -290,6 +290,10 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		return
 	}
 
+	// Render the delete confirmation page
+	c.HTML(http.StatusOK, "book_delete.html", gin.H{
+		"Book": book,
+	})
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
