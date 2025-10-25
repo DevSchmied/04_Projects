@@ -251,6 +251,15 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	_ = idParam
 	title := c.Param("title")
 	_ = title
+
+	// Validate that at least one parameter is provided
+	if idParam == "" && title == "" {
+		log.Println("ID or title is required.")
+		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
+			"error": "Please provide either ID or title to search.",
+		})
+		return
+	}
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
