@@ -61,7 +61,7 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	}
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
-		log.Printf("Invalid book ID value: %v\n", err)
+		log.Printf("Invalid book ID value: %d\n", id)
 		c.String(http.StatusBadRequest, "Invalid book ID value")
 		return
 	}
@@ -262,7 +262,7 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 
 // DeleteBook deletes a book from the database based on its ID.
 func (bc *BookController) DeleteBook(c *gin.Context) {
-	idParam := c.PostForm("id")
+	idParam := c.Param("id")
 
 	var (
 		id  int
@@ -277,6 +277,9 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 			c.String(http.StatusBadRequest, fmt.Sprintf("Invalid ID format: %v\n", err))
 			return
 		}
+	} else {
+		c.String(http.StatusBadRequest, "ID is required for deletion")
+		return
 	}
 
 	// Delete book record from database
@@ -308,8 +311,18 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 
 	var book model.Book
 	// Search for a book by ID or title in the database
-	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
-		return nil, err
+	if id > 0 {
+		// Suche nach ID
+		if err := bc.DB.Where("id = ?", id).First(&book).Error; err != nil {
+			return nil, err
+		}
+	} else if title != "" {
+		// Suche nach Titel
+		if err := bc.DB.Where("title = ?", title).First(&book).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		return nil, fmt.Errorf("no search parameter provided")
 	}
 
 	return &book, nil
