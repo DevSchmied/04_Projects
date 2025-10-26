@@ -260,7 +260,27 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	})
 }
 
-func (bc *BookController) DeleteBook(c *gin.Context) {}
+// DeleteBook deletes a book from the database based on its ID.
+func (bc *BookController) DeleteBook(c *gin.Context) {
+	idParam := c.PostForm("id")
+
+	var (
+		id  int
+		err error
+	)
+
+	_ = id
+
+	// Convert ID
+	if idParam != "" {
+		id, err = strconv.Atoi(idParam)
+		if err != nil {
+			log.Printf("Invalid ID format: %v\n", err)
+			c.String(http.StatusBadRequest, fmt.Sprintf("Invalid ID format: %v\n", err))
+			return
+		}
+	}
+}
 
 // findBookByParam is an internal helper that searches a book by ID or title.
 func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, error) {
