@@ -285,6 +285,9 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		log.Printf("Error deleting book ID %d: %v\n", id, err)
 		c.String(http.StatusInternalServerError, "Failed to delete book")
 	}
+
+	// Redirect back to book list after successful deletion
+	c.Redirect(http.StatusSeeOther, "/books")
 }
 
 // findBookByParam is an internal helper that searches a book by ID or title.
