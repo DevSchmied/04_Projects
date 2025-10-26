@@ -140,8 +140,8 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 // FindBookForUpdate searches a book by ID or title before updating it.
 func (bc *BookController) FindBookForUpdate(c *gin.Context) {
-	idParam := c.Param("id")
-	title := c.Param("title")
+	idParam := c.PostForm("id")
+	title := c.PostForm("title")
 
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
@@ -247,8 +247,8 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 
 // FindBookForDelete searches for a book by ID or title before deletion.
 func (bc *BookController) FindBookForDelete(c *gin.Context) {
-	idParam := c.Param("id")
-	title := c.Param("title")
+	idParam := c.PostForm("id")
+	title := c.PostForm("title")
 
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
@@ -259,31 +259,14 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		return
 	}
 
-	var (
-		id  int
-		err error
-	)
-
-	// Convert ID from string to integer (only if provided)
-	if idParam != "" {
-		id, err = strconv.Atoi(idParam)
-		if err != nil {
-			log.Printf("Invalid book ID format: %v\n", err)
-			c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
-			return
-		}
-	}
-
-	var book model.Book
-	// Search for a book by ID or title in the database
-	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
+	// Use helper function to find the book
+	book, err := bc.findBookByParam(idParam, title)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("Book not found: %v\n", err)
 			c.String(http.StatusNotFound, "Book not found")
-			return
+		} else {
+			c.String(http.StatusInternalServerError, "Failed to search for book")
 		}
-		log.Printf("Error while searching for book: %v\n", err)
-		c.String(http.StatusInternalServerError, "Internal error while searching for book")
 		return
 	}
 
