@@ -152,31 +152,14 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 		return
 	}
 
-	var (
-		id  int
-		err error
-	)
-
-	// Convert ID from string to integer (only if provided)
-	if idParam != "" {
-		id, err = strconv.Atoi(idParam)
-		if err != nil {
-			log.Printf("Invalid book ID format: %v\n", err)
-			c.String(http.StatusBadRequest, "Invalid book ID format (must be a number)")
-			return
-		}
-	}
-
-	var book model.Book
-	// Search for a book by ID or title in the database
-	if err := bc.DB.Where("id = ? OR title = ?", id, title).First(&book).Error; err != nil {
+	// Use helper function to find the book
+	book, err := bc.findBookByParam(idParam, title)
+	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			log.Printf("Book not found: %v\n", err)
 			c.String(http.StatusNotFound, "Book not found")
-			return
+		} else {
+			c.String(http.StatusInternalServerError, "Failed to search for book")
 		}
-		log.Printf("Error while searching for book: %v\n", err)
-		c.String(http.StatusInternalServerError, "Internal error while searching for book")
 		return
 	}
 
