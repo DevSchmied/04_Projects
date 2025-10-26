@@ -27,6 +27,7 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.POST("/add", bc.AddBook)                     // Create
 		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
 		books.POST("/update/:id", bc.UpdateBook)           // Update
+		books.POST("/delete/search", bc.FindBookForDelete) // Search before delete
 		books.DELETE("/delete/:id", bc.DeleteBook)         // Delete
 	}
 }
