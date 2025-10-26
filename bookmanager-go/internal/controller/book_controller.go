@@ -248,9 +248,7 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 // FindBookForDelete searches for a book by ID or title before deletion.
 func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	idParam := c.Param("id")
-	_ = idParam
 	title := c.Param("title")
-	_ = title
 
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
@@ -265,7 +263,6 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		id  int
 		err error
 	)
-	_ = id
 
 	// Convert ID from string to integer (only if provided)
 	if idParam != "" {
@@ -297,3 +294,9 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 }
 
 func (bc *BookController) DeleteBook(c *gin.Context) {}
+
+// findBookByParam is an internal helper that searches a book by ID or title.
+func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, error) {
+
+	return nil, nil
+}
