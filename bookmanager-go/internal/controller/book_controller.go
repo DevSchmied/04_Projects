@@ -269,8 +269,6 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		err error
 	)
 
-	_ = id
-
 	// Convert ID
 	if idParam != "" {
 		id, err = strconv.Atoi(idParam)
@@ -279,6 +277,13 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 			c.String(http.StatusBadRequest, fmt.Sprintf("Invalid ID format: %v\n", err))
 			return
 		}
+	}
+
+	// Delete book record from database
+	var book model.Book
+	if err = bc.DB.Delete(&book, uint(id)).Error; err != nil {
+		log.Printf("Error deleting book ID %d: %v\n", id, err)
+		c.String(http.StatusInternalServerError, "Failed to delete book")
 	}
 }
 
