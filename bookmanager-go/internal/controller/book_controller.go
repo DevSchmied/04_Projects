@@ -34,7 +34,9 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 
 // ShowWelcomePage renders the welcome page.
 func (bc *BookController) ShowWelcomePage(c *gin.Context) {
-
+	c.HTML(http.StatusOK, "index.html", gin.H{
+		"Title": "Welcome to BookManager-Go",
+	})
 }
 
 // GetAllBooks renders an HTML page listing all books in the database.
