@@ -321,7 +321,7 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 	if idParam != "" {
 		id, err = strconv.Atoi(idParam)
 		if err != nil {
-			return nil, fmt.Errorf("Invalid ID format: %v\n", err)
+			return nil, fmt.Errorf("invalid ID format: %v", err)
 		}
 	}
 

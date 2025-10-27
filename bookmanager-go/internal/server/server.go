@@ -12,11 +12,13 @@ type Server struct {
 	router         *gin.Engine
 	bookController controller.BookController
 	address        string
+	staticRoute    string
+	staticPath     string
 	templatePath   string
 }
 
 // NewServer creates a new Server instance with all dependencies injected.
-func NewServer(db *gorm.DB, adr string, templates string) *Server {
+func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Server {
 	r := gin.Default()
 
 	bc := controller.BookController{DB: db}
@@ -25,12 +27,17 @@ func NewServer(db *gorm.DB, adr string, templates string) *Server {
 		router:         r,
 		bookController: bc,
 		address:        adr,
+		staticRoute:    staticRoute,
+		staticPath:     staticPath,
 		templatePath:   templates,
 	}
 }
 
 // StartWebServer starts the web server using dependency injection.
 func (s *Server) Start() error {
+
+	s.router.Static(s.staticRoute, s.staticPath)
+
 	// Load all HTML templates
 	s.router.LoadHTMLGlob(s.templatePath)
 
