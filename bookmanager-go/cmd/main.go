@@ -30,7 +30,7 @@ func main() {
 	}
 
 	serverAddress := "localhost:8080"
-	templatePath := "internal/view/*.html"
+	templatePath := "internal/view/templates/**/*.html"
 	appServer := server.NewServer(db, serverAddress, templatePath)
 	// Start the web server with injected router, controller, and address
 	if err := appServer.Start(); err != nil {
