@@ -45,5 +45,5 @@ func (s *Server) Start() error {
 	s.bookController.RegisterRoutes(s.router)
 
 	// start the HTTP server
-	return s.router.Run()
+	return s.router.Run(s.address)
 }
