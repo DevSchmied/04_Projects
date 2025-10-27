@@ -29,13 +29,12 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
-	serverAddress := "localhost:8080"
-	staticRoute := "/static"
-	staticPath := "./internal/view/static"
-	templatePath := "internal/view/templates/**/*.html"
-	appServer := server.NewServer(db, serverAddress, templatePath, staticRoute, staticPath)
-	// Start the web server with injected router, controller, and address
-	if err := appServer.Start(); err != nil {
+	serverAddress := "localhost:8080"                                                       // Server listening address
+	staticRoute := "/static"                                                                // URL route for static files
+	staticPath := "./internal/view/static"                                                  // Local folder for static files
+	templatePath := "internal/view/templates/**/*.html"                                     // HTML templates location
+	appServer := server.NewServer(db, serverAddress, templatePath, staticRoute, staticPath) // Initialize server with dependencies
+	if err := appServer.Start(); err != nil {                                               // Start web server and handle startup errors
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
