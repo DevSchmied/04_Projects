@@ -25,3 +25,7 @@ and provides **server-rendered HTML pages following RESTful route conventions** 
 ### Goal
 To practice **Clean Architecture** and build a modular, testable CRUD web application in Go  
 that demonstrates **SOLID design**, **interface-driven development**, and **structured testing**.
+
+### Visual Assets
+The visual assets (logos, icons, background watermark) were generated using **AI tools (ChatGPT / DALL·E by OpenAI)**.  
+They were created and used solely for **learning and demonstration purposes** within this **personal pet project**.
