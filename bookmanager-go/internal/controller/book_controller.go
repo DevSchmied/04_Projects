@@ -51,6 +51,7 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	}
 	// Render the list of books using an HTML template
 	c.HTML(http.StatusOK, "books_list.html", gin.H{
+		"Title": "Book List",
 		"Books": books,
 	})
 }
@@ -88,7 +89,8 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 
 	// Render book details in an HTML template
 	c.HTML(http.StatusOK, "book_details.html", gin.H{
-		"Book": book,
+		"Title": "Book Details",
+		"Book":  book,
 	})
 }
 
@@ -106,6 +108,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	// Validate required field
 	if title == "" {
 		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
+			"Title": "Book Add",
 			"error": "Title is required.",
 		})
 		return
@@ -156,6 +159,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
 		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
+			"Title": "Book Search",
 			"error": "Please provide either ID or title to search.",
 		})
 		return
@@ -174,7 +178,8 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 
 	// Render the edit page with the found book data
 	c.HTML(http.StatusOK, "book_edit.html", gin.H{
-		"Book": book,
+		"Title": "Book Edit",
+		"Book":  book,
 	})
 }
 
@@ -193,6 +198,7 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Validate required field
 	if title == "" {
 		c.HTML(http.StatusBadRequest, "book_edit.html", gin.H{
+			"Title": "Book Search",
 			"error": "Title is required.",
 		})
 		return
@@ -246,6 +252,7 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
 		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
+			"Title": "Book Search",
 			"error": "Please provide either ID or title to search.",
 		})
 		return
@@ -264,7 +271,8 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 
 	// Render the delete confirmation page
 	c.HTML(http.StatusOK, "book_delete.html", gin.H{
-		"Book": book,
+		"Title": "Book Delete",
+		"Book":  book,
 	})
 }
 
