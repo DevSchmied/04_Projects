@@ -34,6 +34,6 @@ func main() {
 	appServer := server.NewServer(db, serverAddress, templatePath)
 	// Start the web server with injected router, controller, and address
 	if err := appServer.Start(); err != nil {
-		log.Panicf("Server failed: %v", err)
+		log.Fatalf("Server failed to start: %v", err)
 	}
 }
