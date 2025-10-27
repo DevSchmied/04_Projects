@@ -22,7 +22,8 @@ type BookController struct {
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
 	{
-		books.GET("/", bc.GetAllBooks)                     // Read all
+		books.GET("/", bc.ShowWelcomePage)                 // Display welcome page with logo
+		books.GET("/list", bc.GetAllBooks)                 // Read all
 		books.GET("/:id", bc.GetBookByID)                  // Read one
 		books.POST("/add", bc.AddBook)                     // Create
 		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
