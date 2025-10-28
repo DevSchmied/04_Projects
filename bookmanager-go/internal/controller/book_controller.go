@@ -154,6 +154,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 // FindBookForUpdate searches a book by ID or title before updating it.
 func (bc *BookController) FindBookForUpdate(c *gin.Context) {
+	fmt.Println("Test here")
 	idParam := c.PostForm("id")
 	title := c.PostForm("title")
 
