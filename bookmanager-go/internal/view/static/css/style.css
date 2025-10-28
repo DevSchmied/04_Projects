@@ -1,0 +1,12 @@
+:root {
+
+}
+
+/* Background only for index page */
+.index-bg {
+  background-image: url("/static/img/01_backgroundwatermark.png");
+  background-size: cover;       
+  background-position: center;  
+  background-repeat: no-repeat; 
+  min-height: 100vh;            
+}
