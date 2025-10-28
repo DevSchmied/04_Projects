@@ -53,8 +53,10 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	}
 	// Render the list of books using an HTML template
 	c.HTML(http.StatusOK, "books_list.html", gin.H{
-		"Title": "Book List",
-		"Books": books,
+		"Title":       "Book List",
+		"PageTitle":   "Your Library",
+		"Description": "List of all books currently stored in your library.",
+		"Books":       books,
 	})
 }
 
