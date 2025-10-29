@@ -26,6 +26,7 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.GET("/list", bc.GetAllBooks)                 // Read all
 		books.GET("/:id", bc.GetBookByID)                  // Read one
 		books.POST("/add", bc.AddBook)                     // Create
+		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for selected book
 		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
 		books.POST("/update/:id", bc.UpdateBook)           // Update
 		books.POST("/delete/search", bc.FindBookForDelete) // Search before delete
@@ -154,9 +155,48 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/books")
 }
 
+// ShowEditPage loads the edit form pre-filled with book data
+func (bc *BookController) ShowEditPage(c *gin.Context) {
+	idParam := c.Param("id")
+
+	// Prove that the ID is a valid integer
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		log.Printf("Invalid book ID format: %v\n", err)
+		c.String(http.StatusBadRequest, "Invalid book ID format")
+		return
+	}
+	// Ensure that the ID is greater than zero
+	if id <= 0 {
+		log.Printf("Invalid book ID value: %d\n", id)
+		c.String(http.StatusBadRequest, "Invalid book ID value")
+		return
+	}
+
+	var book model.Book
+	// Retrieve book from database
+	if err := bc.DB.First(&book, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("Book with ID %d not found\n", id)
+			c.String(http.StatusNotFound, "Book not found")
+		} else {
+			log.Printf("Error fetching book with ID %d: %v\n", id, err)
+			c.String(http.StatusInternalServerError, "Failed to fetch book")
+		}
+		return
+	}
+
+	// Render book details in an HTML template
+	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+		"Title":       "Edit Book",
+		"PageTitle":   fmt.Sprintf("Edit: %s", book.Title),
+		"Description": "Update the book information and save your changes.",
+		"Book":        book,
+	})
+}
+
 // FindBookForUpdate searches a book by ID or title before updating it.
 func (bc *BookController) FindBookForUpdate(c *gin.Context) {
-	fmt.Println("Test here")
 	idParam := c.PostForm("id")
 	title := c.PostForm("title")
 
