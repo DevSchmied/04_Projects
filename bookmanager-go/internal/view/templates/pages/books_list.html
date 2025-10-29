@@ -14,63 +14,23 @@
     <table class="table table-striped table-dark table-bordered border-light-subtle table-hover align-middle">
       <thead>
         <tr>
-          <th scope="col">#</th>
-          <th scope="col">ID</th>
+          <th scope="col">№</th>
           <th scope="col">Title</th>
           <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
+        {{range $i, $b := .Books}}
         <tr>
-          <td>1</td>
-          <td>1</td>
+          <td>{{$i}}</td>
           <td>
-            <a href="/books/1" class="text-white text-decoration-underline link-light">The Great Gatsby</a>
+            <a href="/books/{{$b.ID}}" class="text-white text-decoration-underline link-light">{{$b.Title}}</a>
           </td>
           <td>
-            <a href="/books/update/1" class="btn btn-sm btn-outline-primary">Edit</a>
+            <a href="/books/update/{{$b.ID}}" class="btn btn-sm btn-outline-primary">Edit</a>
           </td>
         </tr>
-        <tr>
-          <td>2</td>
-          <td>2</td>
-          <td>
-            <a href="/books/2" class="text-white text-decoration-underline link-light">To Kill a Mockingbird</a>
-          </td>
-          <td>
-            <a href="/books/update/2" class="btn btn-sm btn-outline-primary">Edit</a>
-          </td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>3</td>
-          <td>
-            <a href="/books/3" class="text-white text-decoration-underline link-light">1984</a>
-          </td>
-          <td>
-            <a href="/books/update/3" class="btn btn-sm btn-outline-primary">Edit</a>
-          </td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>4</td>
-          <td>
-            <a href="/books/4" class="text-white text-decoration-underline link-light">Pride and Prejudice</a>
-          </td>
-          <td>
-            <a href="/books/update/4" class="btn btn-sm btn-outline-primary">Edit</a>
-          </td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>5</td>
-          <td>
-            <a href="/books/5" class="text-white text-decoration-underline link-light">The Hobbit</a>
-          </td>
-          <td>
-            <a href="/books/update/5" class="btn btn-sm btn-outline-primary">Edit</a>
-          </td>
-        </tr>
+        {{end}}
       </tbody>
     </table>
   </div>

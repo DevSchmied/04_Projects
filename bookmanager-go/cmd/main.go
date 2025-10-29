@@ -31,7 +31,7 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
-	addTestData(db)
+	// addTestData(db)
 
 	serverAddress := "localhost:8080"                                                       // Server listening address
 	staticRoute := "/static"                                                                // URL route for static files
