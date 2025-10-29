@@ -1,0 +1,7 @@
+{{define "alert"}}
+    {{if .Message}}
+        <div class="alert alert-{{.MessageType}} text-center mt-4" role="alert">
+            {{.Message}}
+        </div>
+    {{end}}
+{{end}}
