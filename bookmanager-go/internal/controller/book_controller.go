@@ -49,7 +49,14 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	// Try to load all books from the database
 	if err := bc.DB.Find(&books).Error; err != nil {
 		log.Printf("Failed to retrieve books: %v\n", err)
-		c.String(http.StatusInternalServerError, "Failed to retrieve books")
+		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     "Failed to retrieve books",
+			"MessageType": "warning",
+			"Books":       books,
+		})
 		return
 	}
 
