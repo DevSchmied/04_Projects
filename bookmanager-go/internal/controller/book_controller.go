@@ -52,6 +52,20 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 		c.String(http.StatusInternalServerError, "Failed to retrieve books")
 		return
 	}
+
+	// Show info message if no books are found
+	if len(books) == 0 {
+		c.HTML(http.StatusOK, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     "There are no saved books yet. Add your first book to the library!",
+			"MessageType": "info",
+			"Books":       books,
+		})
+		return
+	}
+
 	// Render the list of books using an HTML template
 	c.HTML(http.StatusOK, "books_list.html", gin.H{
 		"Title":       "Book List",
