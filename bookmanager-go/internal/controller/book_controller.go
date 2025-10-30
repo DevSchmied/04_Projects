@@ -115,8 +115,10 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 
 	// Render book details in an HTML template
 	c.HTML(http.StatusOK, "book_details.html", gin.H{
-		"Title": "Book Details",
-		"Book":  book,
+		"Title":       "Book Details",
+		"PageTitle":   fmt.Sprintf("Details of '%s'", book.Title),
+		"Description": "Detailed information about the selected book from your library.",
+		"Book":        book,
 	})
 }
 
