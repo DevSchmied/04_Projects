@@ -38,14 +38,15 @@ func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Ser
 // setupTemplates registers custom template functions and loads all templates.
 func (s *Server) setupTemplates() {
 	// Register custom template functions
-	funcMap := template.FuncMap{
-		"add1": add1,
+	funcsMap := template.FuncMap{
+		"add1":       add1,
+		"formatDate": formatDate,
 	}
 
 	// Parse templates with custom functions
 	tmpl := template.Must(
 		template.New("base").
-			Funcs(funcMap).
+			Funcs(funcsMap).
 			ParseGlob(s.templatePath),
 	)
 
