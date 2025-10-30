@@ -45,7 +45,14 @@ func (s *Server) Start() error {
 		"add1": add1,
 	}
 
-	_ = funcMap
+	// Parse templates with custom functions
+	tmpl := template.Must(
+		template.New("base").
+			Funcs(funcMap).
+			ParseGlob(s.templatePath),
+	)
+
+	_ = tmpl
 
 	// Load all HTML templates
 	s.router.LoadHTMLGlob(s.templatePath)
