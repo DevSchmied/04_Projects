@@ -91,13 +91,27 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid book ID format: %v\n", err)
-		c.String(http.StatusBadRequest, "Invalid book ID format")
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Book Details",
+			"PageTitle":   "Details of book",
+			"Description": "Detailed information about the selected book from your library.",
+			"Message":     "Invalid book ID format",
+			"MessageType": "danger",
+			"Book":        book,
+		})
 		return
 	}
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
 		log.Printf("Invalid book ID value: %d\n", id)
-		c.String(http.StatusBadRequest, "Invalid book ID value")
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Book Details",
+			"PageTitle":   "Details of book",
+			"Description": "Detailed information about the selected book from your library.",
+			"Message":     "Invalid book ID value",
+			"MessageType": "warning",
+			"Book":        book,
+		})
 		return
 	}
 
@@ -105,10 +119,24 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book with ID %d not found\n", id)
-			c.String(http.StatusNotFound, "Book not found")
+			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+				"Title":       "Book Details",
+				"PageTitle":   "Details of book",
+				"Description": "Detailed information about the selected book from your library.",
+				"Message":     "Book not found.",
+				"MessageType": "info",
+				"Book":        book,
+			})
 		} else {
 			log.Printf("Error fetching book with ID %d: %v\n", id, err)
-			c.String(http.StatusInternalServerError, "Failed to fetch book")
+			c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+				"Title":       "Book Details",
+				"PageTitle":   "Details of book",
+				"Description": "Detailed information about the selected book from your library.",
+				"Message":     "An unexpected database error occurred.",
+				"MessageType": "danger",
+				"Book":        book,
+			})
 		}
 		return
 	}

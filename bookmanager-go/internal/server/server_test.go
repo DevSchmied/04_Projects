@@ -1,6 +1,8 @@
 package server
 
-import "testing"
+import (
+	"testing"
+)
 
 // TestAdd1 verifies that the add1 helper function correctly increments integers.
 func TestAdd1(t *testing.T) {
