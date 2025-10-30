@@ -15,5 +15,17 @@ func TestAdd1(t *testing.T) {
 		{"zero input", 0, 1},
 		{"larger positive input", 99, 100},
 	}
-	_ = tests
+
+	// Run each case as an individual subtest
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Act
+			result := add1(tt.input)
+
+			// Assert
+			if result != tt.expected {
+				t.Errorf("add1(%d): got %d, want %d", tt.input, result, tt.expected)
+			}
+		})
+	}
 }
