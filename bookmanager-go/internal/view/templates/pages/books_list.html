@@ -22,7 +22,7 @@
       <tbody>
         {{range $i, $b := .Books}}
         <tr>
-          <td>{{$i}}</td>
+          <td>{{add1 $i}}</td>
           <td>
             <a href="/books/{{$b.ID}}" class="text-white text-decoration-underline link-light">{{$b.Title}}</a>
           </td>
