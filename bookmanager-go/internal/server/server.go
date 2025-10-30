@@ -3,6 +3,7 @@ package server
 import (
 	"bookmanager-go/internal/controller"
 	"html/template"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -70,4 +71,9 @@ func (s *Server) Start() error {
 // add1 adds 1 to an integer index (used in templates for human-friendly numbering)
 func add1(i int) int {
 	return i + 1
+}
+
+// formatDate formats a time.Time value into a human-readable string.
+func formatDate(d time.Time) string {
+	return d.Format("2 January 2006")
 }
