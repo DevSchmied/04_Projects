@@ -2,6 +2,7 @@ package server
 
 import (
 	"bookmanager-go/internal/controller"
+	"text/template"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -36,7 +37,15 @@ func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Ser
 // StartWebServer starts the web server using dependency injection.
 func (s *Server) Start() error {
 
+	// Serve static files
 	s.router.Static(s.staticRoute, s.staticPath)
+
+	// Register custom template functions
+	funcMap := template.FuncMap{
+		"add1": add1,
+	}
+
+	_ = funcMap
 
 	// Load all HTML templates
 	s.router.LoadHTMLGlob(s.templatePath)
