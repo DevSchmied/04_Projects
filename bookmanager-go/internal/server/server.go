@@ -47,3 +47,8 @@ func (s *Server) Start() error {
 	// start the HTTP server
 	return s.router.Run(s.address)
 }
+
+// add1 adds 1 to an integer index (used in templates for human-friendly numbering)
+func add1(i int) int {
+	return i + 1
+}
