@@ -10,6 +10,17 @@
     {{template "alert" .}}
   {{end}}
 
+  {{if .Book}}
+  <div class="container mt-5">
+    <table class="table table-striped table-dark table-bordered border-light-subtle table-hover align-middle">
+      <thead>
+        <tr>
+          <th scope="col">Property</th>
+          <th scope="col">Content</th>
+        </tr>
+      </thead>
+  {{end}}
+
   {{template "footer" .}}
 
   {{template "html_end" .}}
