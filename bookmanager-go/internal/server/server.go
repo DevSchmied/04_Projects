@@ -2,7 +2,7 @@ package server
 
 import (
 	"bookmanager-go/internal/controller"
-	"text/template"
+	"html/template"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -52,10 +52,11 @@ func (s *Server) Start() error {
 			ParseGlob(s.templatePath),
 	)
 
-	_ = tmpl
+	// Set the parsed template for Gin
+	s.router.SetHTMLTemplate(tmpl)
 
 	// Load all HTML templates
-	s.router.LoadHTMLGlob(s.templatePath)
+	// s.router.LoadHTMLGlob(s.templatePath)
 
 	// Register routes for controllers
 	s.bookController.RegisterRoutes(s.router)
