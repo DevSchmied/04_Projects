@@ -34,12 +34,8 @@ func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Ser
 	}
 }
 
-// StartWebServer starts the web server using dependency injection.
-func (s *Server) Start() error {
-
-	// Serve static files
-	s.router.Static(s.staticRoute, s.staticPath)
-
+// setupTemplates registers custom template functions and loads all templates.
+func (s *Server) setupTemplates() {
 	// Register custom template functions
 	funcMap := template.FuncMap{
 		"add1": add1,
@@ -54,9 +50,15 @@ func (s *Server) Start() error {
 
 	// Set the parsed template for Gin
 	s.router.SetHTMLTemplate(tmpl)
+}
 
-	// Load all HTML templates
-	// s.router.LoadHTMLGlob(s.templatePath)
+// StartWebServer starts the web server using dependency injection.
+func (s *Server) Start() error {
+	// Serve static files
+	s.router.Static(s.staticRoute, s.staticPath)
+
+	// Register custom template functions and load all templates.
+	s.setupTemplates()
 
 	// Register routes for controllers
 	s.bookController.RegisterRoutes(s.router)
