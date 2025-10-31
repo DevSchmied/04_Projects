@@ -56,5 +56,16 @@ func TestFormatDate(t *testing.T) {
 			expected: "5 March 2023",
 		},
 	}
-	_ = tests
+	// Act & Assert
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Act
+			result := formatDate(tt.input)
+
+			// Assert
+			if result != tt.expected {
+				t.Errorf("formatDate(%v) = %q; want %q", tt.input, result, tt.expected)
+			}
+		})
+	}
 }
