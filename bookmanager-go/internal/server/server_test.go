@@ -2,6 +2,7 @@ package server
 
 import (
 	"testing"
+	"time"
 )
 
 // TestAdd1 verifies that the add1 helper function correctly increments integers.
@@ -30,4 +31,15 @@ func TestAdd1(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestFormatDate(t *testing.T) {
+	// Arrange: define multiple test cases for formatDate
+	tests := []struct {
+		name     string
+		input    time.Time
+		expected string
+	}{}
+
+	_ = tests
 }
