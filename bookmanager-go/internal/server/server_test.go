@@ -39,7 +39,22 @@ func TestFormatDate(t *testing.T) {
 		name     string
 		input    time.Time
 		expected string
-	}{}
-
+	}{
+		{
+			name:     "zero time formatted as default date",
+			input:    time.Time{},
+			expected: "1 January 0001",
+		},
+		{
+			name:     "regular date formatted correctly",
+			input:    time.Date(2025, time.October, 30, 12, 0, 0, 0, time.UTC),
+			expected: "30 October 2025",
+		},
+		{
+			name:     "different month formatted correctly",
+			input:    time.Date(2023, time.March, 5, 8, 30, 0, 0, time.UTC),
+			expected: "5 March 2023",
+		},
+	}
 	_ = tests
 }
