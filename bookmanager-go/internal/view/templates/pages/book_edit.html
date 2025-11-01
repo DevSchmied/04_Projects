@@ -5,6 +5,10 @@
 
   {{template "intro" .}}
 
+  {{if .Message}}
+    {{template "alert" .}}
+  {{end}}
+
   {{template "footer" .}}
 
   {{template "html_end" .}}
