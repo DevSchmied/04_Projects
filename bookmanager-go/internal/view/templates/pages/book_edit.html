@@ -11,6 +11,17 @@
  
   {{if .Book}}
 
+  <div class="container mt-5 mb-5">
+    <form action="/books/update/{{.Book.ID}}" method="POST">
+      <table class="table table-dark table-striped table-bordered border-light-subtle table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Content</th>
+          </tr>
+        </thead>
+
+  
   {{end}}
   
   {{template "footer" .}}
