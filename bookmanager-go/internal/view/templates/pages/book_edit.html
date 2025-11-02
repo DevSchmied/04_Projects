@@ -20,7 +20,50 @@
             <th scope="col">Content</th>
           </tr>
         </thead>
-
+        <tbody>
+          <tr>
+            <td>ID</td>
+            <td>{{.Book.ID}}</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td><input type="text" name="title" value="{{.Book.Title}}" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td><input type="text" name="author" value="{{.Book.Author}}" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Year Published</td>
+            <td><input type="number" name="year" value="{{.Book.Year}}" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Genre</td>
+            <td><input type="text" name="genre" value="{{.Book.Genre}}" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>ISBN</td>
+            <td><input type="text" name="isbn" value="{{.Book.ISBN}}" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Rating</td>
+            <td><input type="number" name="rating" value="{{.Book.Rating}}" class="form-control bg-dark text-light border-light" step="0.1" min="0" max="10"></td>
+          </tr>
+          <tr>
+            <td>Finished Reading</td>
+            <td>
+              <select name="read" class="form-select bg-dark text-light border-light">
+                <option value="true" {{if .Book.Read}}selected{{end}}>Yes</option>
+                <option value="false" {{if not .Book.Read}}selected{{end}}>No</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>Added on</td>
+            <td>{{formatDate .Book.CreatedAt}}</td>
+          </tr>
+        </tbody>
+      </table>
   
   {{end}}
   
