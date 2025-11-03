@@ -208,13 +208,21 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 // ShowEditPage loads the edit form pre-filled with book data
 func (bc *BookController) ShowEditPage(c *gin.Context) {
+	var book model.Book
 	idParam := c.Param("id")
 
 	// Prove that the ID is a valid integer
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid book ID format: %v\n", err)
-		c.String(http.StatusBadRequest, "Invalid book ID format")
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Edit Book",
+			"PageTitle":   "Edit Book",
+			"Description": "Update the book information and save your changes.",
+			"Message":     "Invalid book ID format",
+			"MessageType": "danger",
+			"Book":        book,
+		})
 		return
 	}
 	// Ensure that the ID is greater than zero
@@ -224,7 +232,6 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 		return
 	}
 
-	var book model.Book
 	// Retrieve book from database
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
