@@ -173,9 +173,12 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 	// Validate required field
 	if title == "" {
-		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
-			"Title": "Book Add",
-			"error": "Title is required.",
+		c.HTML(http.StatusOK, "book_add.html", gin.H{
+			"Title":       "Add Book",
+			"PageTitle":   "Add a New Book",
+			"Description": "Enter the details of the new book and click Save.",
+			"Message":     "Title is required.",
+			"MessageType": "warning",
 		})
 		return
 	}
