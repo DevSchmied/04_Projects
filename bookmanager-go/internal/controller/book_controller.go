@@ -25,6 +25,7 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.GET("/", bc.ShowWelcomePage)                 // Display welcome page with logo
 		books.GET("/list", bc.GetAllBooks)                 // Read all
 		books.GET("/:id", bc.GetBookByID)                  // Read one
+		books.GET("add", bc.ShowAddPage)                   // Show add form
 		books.POST("/add", bc.AddBook)                     // Create
 		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for selected book
 		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
@@ -147,6 +148,15 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 		"PageTitle":   fmt.Sprintf("Details of '%s'", book.Title),
 		"Description": "Detailed information about the selected book from your library.",
 		"Book":        book,
+	})
+}
+
+// ShowAddPage displays the HTML form to add a new book.
+func (bc *BookController) ShowAddPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "book_add.html", gin.H{
+		"Title":       "Add Book",
+		"PageTitle":   "Add a New Book",
+		"Description": "Enter the details of the new book and click Save.",
 	})
 }
 
