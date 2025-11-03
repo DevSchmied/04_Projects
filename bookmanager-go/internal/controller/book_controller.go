@@ -243,10 +243,25 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book with ID %d not found\n", id)
-			c.String(http.StatusNotFound, "Book not found")
+			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+				"Title":       "Edit Book",
+				"PageTitle":   "Edit Book",
+				"Description": "Update the book information and save your changes.",
+				"Message":     "Book not found",
+				"MessageType": "info",
+				"Book":        book,
+			})
+			return
 		} else {
 			log.Printf("Error fetching book with ID %d: %v\n", id, err)
-			c.String(http.StatusInternalServerError, "Failed to fetch book")
+			c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+				"Title":       "Edit Book",
+				"PageTitle":   "Edit Book",
+				"Description": "Update the book information and save your changes.",
+				"Message":     "An unexpected database error occurred.",
+				"MessageType": "danger",
+				"Book":        book,
+			})
 		}
 		return
 	}
