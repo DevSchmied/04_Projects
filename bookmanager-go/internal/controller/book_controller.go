@@ -227,8 +227,15 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	}
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
-		log.Printf("Invalid book ID value: %d\n", id)
-		c.String(http.StatusBadRequest, "Invalid book ID value")
+		log.Printf("Invalid book ID value: %v\n", err)
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Edit Book",
+			"PageTitle":   "Edit Book",
+			"Description": "Update the book information and save your changes.",
+			"Message":     "Invalid book ID value",
+			"MessageType": "warning",
+			"Book":        book,
+		})
 		return
 	}
 
