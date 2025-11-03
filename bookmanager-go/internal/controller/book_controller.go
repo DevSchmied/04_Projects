@@ -173,7 +173,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 	// Validate required field
 	if title == "" {
-		c.HTML(http.StatusOK, "book_add.html", gin.H{
+		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
 			"Title":       "Add Book",
 			"PageTitle":   "Add a New Book",
 			"Description": "Enter the details of the new book and click Save.",
@@ -211,7 +211,13 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	// Save to database
 	if err := bc.DB.Create(&book).Error; err != nil {
 		log.Printf("Error saving book: %v\n", err)
-		c.String(http.StatusInternalServerError, "Failed to save book")
+		c.HTML(http.StatusInternalServerError, "book_add.html", gin.H{
+			"Title":       "Add Book",
+			"PageTitle":   "Add a New Book",
+			"Description": "Enter the details of the new book and click Save.",
+			"Message":     "Failed to save book.",
+			"MessageType": "danger",
+		})
 		return
 	}
 
