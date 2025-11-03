@@ -213,7 +213,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	}
 
 	// Redirect to list page
-	c.Redirect(http.StatusSeeOther, "/books")
+	c.Redirect(http.StatusSeeOther, "/books/list")
 }
 
 // ShowEditPage loads the edit form pre-filled with book data
