@@ -208,6 +208,7 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 // ShowEditPage loads the edit form pre-filled with book data
 func (bc *BookController) ShowEditPage(c *gin.Context) {
+
 	var book model.Book
 	idParam := c.Param("id")
 
