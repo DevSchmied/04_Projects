@@ -25,9 +25,10 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.GET("/", bc.ShowWelcomePage)                 // Display welcome page with logo
 		books.GET("/list", bc.GetAllBooks)                 // Read all
 		books.GET("/:id", bc.GetBookByID)                  // Read one
-		books.GET("add", bc.ShowAddPage)                   // Show add form
+		books.GET("/add", bc.ShowAddPage)                  // Show add form
 		books.POST("/add", bc.AddBook)                     // Create
 		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for selected book
+		books.GET("/update/search", bc.ShowSearchPage)     // Show search form
 		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
 		books.POST("/update/:id", bc.UpdateBook)           // Update
 		books.POST("/delete/search", bc.FindBookForDelete) // Search before delete
@@ -157,6 +158,8 @@ func (bc *BookController) ShowAddPage(c *gin.Context) {
 		"Title":       "Add Book",
 		"PageTitle":   "Add a New Book",
 		"Description": "Enter the details of the new book and click Save.",
+		"Message":     "",
+		"MessageType": "",
 	})
 }
 
@@ -291,7 +294,20 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 		"Title":       "Edit Book",
 		"PageTitle":   fmt.Sprintf("Edit: %s", book.Title),
 		"Description": "Update the book information and save your changes.",
+		"Message":     "",
+		"MessageType": "",
 		"Book":        book,
+	})
+}
+
+// ShowSearchPage renders HTML search form
+func (bc *BookController) ShowSearchPage(c *gin.Context) {
+	c.HTML(http.StatusOK, "book_search.html", gin.H{
+		"Title":       "Book Search",
+		"PageTitle":   "Book Search",
+		"Description": "Enter either the book ID or title to search for a specific book.",
+		"Message":     "",
+		"MessageType": "",
 	})
 }
 
