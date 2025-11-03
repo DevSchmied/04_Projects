@@ -9,6 +9,58 @@
     {{template "alert" .}}
   {{end}}
 
+  <div class="container mt-5 mb-5">
+    <form action="/books/add" method="POST">
+      <table class="table table-dark table-striped table-bordered border-light-subtle table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Content</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Title</td>
+            <td><input type="text" name="title" class="form-control bg-dark text-light border-light" required></td>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td><input type="text" name="author" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Year Published</td>
+            <td><input type="number" name="year" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Genre</td>
+            <td><input type="text" name="genre" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>ISBN</td>
+            <td><input type="text" name="isbn" class="form-control bg-dark text-light border-light"></td>
+          </tr>
+          <tr>
+            <td>Rating</td>
+            <td><input type="number" name="rating" class="form-control bg-dark text-light border-light" step="0.1" min="0" max="10"></td>
+          </tr>
+          <tr>
+            <td>Finished Reading</td>
+            <td>
+              <select name="read" class="form-select bg-dark text-light border-light">
+                <option value="true">Yes</option>
+                <option value="false" selected>No</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="btn btn-outline-success" style="width: 120px;">Save</button>
+      </div>
+    </form>
+  </div>
+
   {{template "footer" .}}
 
   {{template "html_end" .}}
