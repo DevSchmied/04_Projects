@@ -356,8 +356,12 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 
 	// Render the edit page with the found book data
 	c.HTML(http.StatusOK, "book_edit.html", gin.H{
-		"Title": "Book Edit",
-		"Book":  book,
+		"Title":       "Book Edit",
+		"PageTitle":   fmt.Sprintf("Edit: %s", book.Title),
+		"Description": "Update the book information and save your changes.",
+		"Message":     "",
+		"MessageType": "",
+		"Book":        book,
 	})
 }
 
