@@ -303,6 +303,32 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 
 // ShowSearchPage renders HTML search form
 func (bc *BookController) ShowSearchPage(c *gin.Context) {
+	path := c.FullPath()
+
+	var (
+		pageTitle   string
+		description string
+		action      string
+	)
+
+	_ = pageTitle
+	_ = description
+	_ = action
+
+	if strings.Contains(path, "update") {
+		pageTitle = "Find Book to Update"
+		description = "Enter either the book ID or title to search for a book you want to update."
+		action = "update/search"
+	} else if strings.Contains(path, "delete") {
+		pageTitle = "Find Book to Delete"
+		description = "Enter either the book ID or title to search for a book you want to delete."
+		action = "delete/search"
+	} else {
+		pageTitle = "Book Search"
+		description = "Enter either the book ID or title to search for a specific book."
+		action = "update/search"
+	}
+
 	c.HTML(http.StatusOK, "book_search.html", gin.H{
 		"Title":       "Book Search",
 		"PageTitle":   "Book Search",
