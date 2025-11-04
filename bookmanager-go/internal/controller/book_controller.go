@@ -319,9 +319,12 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
-		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
-			"Title": "Book Search",
-			"error": "Please provide either ID or title to search.",
+		c.HTML(http.StatusOK, "book_search.html", gin.H{
+			"Title":       "Book Search",
+			"PageTitle":   "Book Search",
+			"Description": "Enter either the book ID or title to search for a specific book.",
+			"Message":     "Please provide either ID or title to search.",
+			"MessageType": "info",
 		})
 		return
 	}
