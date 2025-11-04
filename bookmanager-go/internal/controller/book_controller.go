@@ -333,6 +333,15 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	book, err := bc.findBookByParam(idParam, title)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.HTML(http.StatusNotFound, "books_search.html", gin.H{
+				"Title":       "Book Search",
+				"PageTitle":   "Book Search",
+				"Description": "Enter either the book ID or title to search for a specific book.",
+				"Message":     "Book not found",
+				"MessageType": "info",
+				"Book":        book,
+			})
+			return
 			c.String(http.StatusNotFound, "Book not found")
 		} else {
 			c.String(http.StatusInternalServerError, "Failed to search for book")
