@@ -311,10 +311,6 @@ func (bc *BookController) ShowSearchPage(c *gin.Context) {
 		action      string
 	)
 
-	_ = pageTitle
-	_ = description
-	_ = action
-
 	if strings.Contains(path, "update") {
 		pageTitle = "Find Book to Update"
 		description = "Enter either the book ID or title to search for a book you want to update."
@@ -330,9 +326,10 @@ func (bc *BookController) ShowSearchPage(c *gin.Context) {
 	}
 
 	c.HTML(http.StatusOK, "book_search.html", gin.H{
-		"Title":       "Book Search",
-		"PageTitle":   "Book Search",
-		"Description": "Enter either the book ID or title to search for a specific book.",
+		"Title":       pageTitle,
+		"PageTitle":   pageTitle,
+		"Description": description,
+		"Action":      action,
 		"Message":     "",
 		"MessageType": "",
 	})
