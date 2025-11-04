@@ -341,10 +341,15 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 				"MessageType": "info",
 				"Book":        book,
 			})
-			return
-			c.String(http.StatusNotFound, "Book not found")
 		} else {
-			c.String(http.StatusInternalServerError, "Failed to search for book")
+			c.HTML(http.StatusInternalServerError, "books_search.html", gin.H{
+				"Title":       "Book Search",
+				"PageTitle":   "Book Search",
+				"Description": "Enter either the book ID or title to search for a specific book.",
+				"Message":     "Failed to search for book.",
+				"MessageType": "danger",
+				"Book":        book,
+			})
 		}
 		return
 	}
