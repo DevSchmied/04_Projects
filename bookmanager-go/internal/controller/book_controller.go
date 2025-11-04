@@ -333,7 +333,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	book, err := bc.findBookByParam(idParam, title)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.HTML(http.StatusNotFound, "books_search.html", gin.H{
+			c.HTML(http.StatusNotFound, "book_search.html", gin.H{
 				"Title":       "Book Search",
 				"PageTitle":   "Book Search",
 				"Description": "Enter either the book ID or title to search for a specific book.",
@@ -516,7 +516,7 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 		}
 	} else if title != "" {
 		// Suche nach Titel
-		if err := bc.DB.Where("title = ?", title).First(&book).Error; err != nil {
+		if err := bc.DB.Where("title LIKE ?", "%"+title+"%").First(&book).Error; err != nil {
 			return nil, err
 		}
 	} else {
