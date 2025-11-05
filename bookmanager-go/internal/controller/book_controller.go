@@ -410,8 +410,11 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Validate required field
 	if title == "" {
 		c.HTML(http.StatusBadRequest, "book_edit.html", gin.H{
-			"Title": "Book Search",
-			"error": "Title is required.",
+			"Title":       "Edit Book",
+			"PageTitle":   "Edit Book",
+			"Description": "Update the book information and save your changes.",
+			"Message":     "Title is required.",
+			"MessageType": "warning",
 		})
 		return
 	}
@@ -447,12 +450,27 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Update database record
 	if err := bc.DB.Model(&model.Book{}).Where("id = ?", id).Updates(book).Error; err != nil {
 		log.Printf("Error updating book ID %d: %v\n", id, err)
-		c.String(http.StatusInternalServerError, "Failed to update book")
+		c.HTML(http.StatusInternalServerError, "book_edit.html", gin.H{
+			"Title":       "Edit Book",
+			"PageTitle":   "Edit Book",
+			"Description": "Update the book information and save your changes.",
+			"Message":     fmt.Sprintf("Failed to update book ID %d.", id),
+			"MessageType": "danger",
+			"Book":        book,
+		})
 		return
 	}
 
-	// Redirect on success
-	c.Redirect(http.StatusSeeOther, fmt.Sprintf("/books/%d", id))
+	// Success message after update
+	log.Printf("Book with ID %d successfully updated.\n", id)
+	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+		"Title":       "Edit Book",
+		"PageTitle":   "Edit Book",
+		"Description": "Update the book information and save your changes.",
+		"Message":     fmt.Sprintf("Book with ID %d was successfully updated.", id),
+		"MessageType": "success",
+		"Book":        book,
+	})
 }
 
 // FindBookForDelete searches for a book by ID or title before deletion.
