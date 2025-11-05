@@ -9,7 +9,42 @@
     {{template "alert" .}}
   {{end}}
 
-  
+  <div class="container mt-5 mb-5">
+    <form action="/books/delete/{{.Book.ID}}" method="POST">
+      <table class="table table-dark table-striped table-bordered border-light-subtle table-hover align-middle">
+        <thead>
+          <tr>
+            <th scope="col">Property</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>ID</td>
+            <td>{{.Book.ID}}</td>
+          </tr>
+          <tr>
+            <td>Title</td>
+            <td>{{.Book.Title}}</td>
+          </tr>
+          <tr>
+            <td>Author</td>
+            <td>{{.Book.Author}}</td>
+          </tr>
+          <tr>
+            <td>Year Published</td>
+            <td>{{.Book.Year}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="d-flex justify-content-end gap-3">
+        <button type="submit" class="btn btn-outline-success" style="width: 120px;">Yes</button>
+        <a href="/books/list" class="btn btn-outline-danger" style="width: 120px;">No</a>
+      </div>
+    </form>
+  </div>
+
   {{template "footer" .}}
 
   {{template "html_end" .}}
