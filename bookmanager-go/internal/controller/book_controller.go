@@ -398,7 +398,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 // UpdateBook updates an existing book in the database based on form input.
 func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Read form input
-	idParam := c.PostForm("id")
+	idParam := c.Param("id")
 	title := c.PostForm("title")
 	author := c.PostForm("author")
 	yearStr := c.PostForm("year")
