@@ -472,10 +472,27 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	book, err := bc.findBookByParam(idParam, title)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.String(http.StatusNotFound, "Book not found")
-		} else {
-			c.String(http.StatusInternalServerError, "Failed to search for book")
+			log.Printf("Book not found for ID '%s' or title '%s'\n", idParam, title)
+			c.HTML(http.StatusNotFound, "book_search.html", gin.H{
+				"Title":       "Find Book to Delete",
+				"PageTitle":   "Find Book to Delete",
+				"Description": "Enter either the book ID or title to search for a book you want to delete.",
+				"Message":     "Book not found.",
+				"MessageType": "info",
+				"Action":      "delete/search",
+			})
+			return
 		}
+
+		log.Printf("Error searching for book: %v\n", err)
+		c.HTML(http.StatusInternalServerError, "book_search.html", gin.H{
+			"Title":       "Find Book to Delete",
+			"PageTitle":   "Find Book to Delete",
+			"Description": "Enter either the book ID or title to search for a book you want to delete.",
+			"Message":     "An unexpected error occurred while searching for the book.",
+			"MessageType": "danger",
+			"Action":      "delete/search",
+		})
 		return
 	}
 
