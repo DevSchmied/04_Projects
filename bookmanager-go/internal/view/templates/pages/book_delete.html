@@ -1,5 +1,15 @@
 {{template "head" .}}
 <body>
-  <h1>Book Delete</h1>
 
-{{template "html_end" .}}
+  {{template "navbar" .}}
+
+  {{template "intro" .}}
+
+  {{if .Message}}
+    {{template "alert" .}}
+  {{end}}
+
+  
+  {{template "footer" .}}
+
+  {{template "html_end" .}}
