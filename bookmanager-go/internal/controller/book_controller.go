@@ -33,7 +33,7 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.POST("/update/:id", bc.UpdateBook)           // Update
 		books.GET("/delete/search", bc.ShowSearchPage)     // Show search form
 		books.POST("/delete/search", bc.FindBookForDelete) // Search before delete
-		books.DELETE("/delete/:id", bc.DeleteBook)         // Delete
+		books.POST("/delete/:id", bc.DeleteBook)           // Delete
 	}
 }
 
