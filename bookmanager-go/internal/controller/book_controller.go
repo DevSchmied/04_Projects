@@ -43,6 +43,8 @@ func (bc *BookController) ShowWelcomePage(c *gin.Context) {
 		"Title":       "Welcome to BookManager",
 		"PageTitle":   "Welcome to BookManager",
 		"Description": "Manage your personal library — add, edit, and organize your favorite books.",
+		"Message":     "",
+		"MessageType": "",
 	})
 }
 
@@ -81,6 +83,8 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 		"Title":       "Book List",
 		"PageTitle":   "Your Library",
 		"Description": "List of all books currently stored in your library.",
+		"Message":     "",
+		"MessageType": "",
 		"Books":       books,
 	})
 }
@@ -149,6 +153,8 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 		"Title":       "Book Details",
 		"PageTitle":   fmt.Sprintf("Details of '%s'", book.Title),
 		"Description": "Detailed information about the selected book from your library.",
+		"Message":     "",
+		"MessageType": "",
 		"Book":        book,
 	})
 }
@@ -501,6 +507,8 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		"Title":       "Confirm Book Deletion",
 		"PageTitle":   "Confirm Book Deletion",
 		"Description": "Please confirm that you want to permanently delete this book from your library.",
+		"Message":     "",
+		"MessageType": "",
 		"Book":        book,
 	})
 }

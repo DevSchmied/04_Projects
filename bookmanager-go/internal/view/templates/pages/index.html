@@ -5,5 +5,9 @@
 
   {{template "intro" .}}
 
+  {{if .Message}}
+    {{template "alert" .}}
+  {{end}}
+
   {{template "html_end" .}}
 
