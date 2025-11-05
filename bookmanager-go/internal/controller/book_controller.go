@@ -458,8 +458,12 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
 		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
-			"Title": "Book Search",
-			"error": "Please provide either ID or title to search.",
+			"Title":       "Find Book to Delete",
+			"PageTitle":   "Find Book to Delete",
+			"Description": "Enter either the book ID or title to search for a book you want to delete.",
+			"Message":     "Please provide either the book ID or title.",
+			"MessageType": "warning",
+			"Action":      "delete/search",
 		})
 		return
 	}
