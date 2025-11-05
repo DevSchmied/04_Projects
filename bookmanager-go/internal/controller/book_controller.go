@@ -514,28 +514,80 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		err error
 	)
 
-	// Convert ID
-	if idParam != "" {
-		id, err = strconv.Atoi(idParam)
-		if err != nil {
-			log.Printf("Invalid ID format: %v\n", err)
-			c.String(http.StatusBadRequest, fmt.Sprintf("Invalid ID format: %v\n", err))
+	// Validate and convert ID
+	if idParam == "" {
+		log.Println("ID is required for deletion")
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     "Book ID is required for deletion.",
+			"MessageType": "warning",
+		})
+		return
+	}
+
+	id, err = strconv.Atoi(idParam)
+	if err != nil {
+		log.Printf("Invalid ID format: %v\n", err)
+		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     fmt.Sprintf("Invalid ID format: %v", err),
+			"MessageType": "danger",
+		})
+		return
+	}
+
+	// Check if the book exists
+	var book model.Book
+	if err = bc.DB.First(&book, uint(id)).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			log.Printf("Book with ID %d not found\n", id)
+			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+				"Title":       "Book List",
+				"PageTitle":   "Your Library",
+				"Description": "List of all books currently stored in your library.",
+				"Message":     fmt.Sprintf("Book with ID %d not found.", id),
+				"MessageType": "info",
+			})
 			return
 		}
-	} else {
-		c.String(http.StatusBadRequest, "ID is required for deletion")
+
+		log.Printf("Error fetching book before deletion: %v\n", err)
+		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     "An unexpected error occurred while checking the book.",
+			"MessageType": "danger",
+		})
 		return
 	}
 
 	// Delete book record from database
-	var book model.Book
-	if err = bc.DB.Delete(&book, uint(id)).Error; err != nil {
+	if err = bc.DB.Delete(&book).Error; err != nil {
 		log.Printf("Error deleting book ID %d: %v\n", id, err)
-		c.String(http.StatusInternalServerError, "Failed to delete book")
+		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+			"Title":       "Book List",
+			"PageTitle":   "Your Library",
+			"Description": "List of all books currently stored in your library.",
+			"Message":     "Failed to delete the book.",
+			"MessageType": "danger",
+		})
+		return
 	}
 
-	// Redirect back to book list after successful deletion
-	c.Redirect(http.StatusSeeOther, "/books/list")
+	// Redirect back to book list with success info
+	log.Printf("Book with ID %d successfully deleted.\n", id)
+	c.HTML(http.StatusOK, "books_list.html", gin.H{
+		"Title":       "Book List",
+		"PageTitle":   "Your Library",
+		"Description": "List of all books currently stored in your library.",
+		"Message":     fmt.Sprintf("Book with ID %d was successfully deleted.", id),
+		"MessageType": "success",
+	})
 }
 
 // findBookByParam is an internal helper that searches a book by ID or title.
