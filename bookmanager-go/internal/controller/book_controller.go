@@ -498,8 +498,10 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 
 	// Render the delete confirmation page
 	c.HTML(http.StatusOK, "book_delete.html", gin.H{
-		"Title": "Book Delete",
-		"Book":  book,
+		"Title":       "Confirm Book Deletion",
+		"PageTitle":   "Confirm Book Deletion",
+		"Description": "Please confirm that you want to permanently delete this book from your library.",
+		"Book":        book,
 	})
 }
 
