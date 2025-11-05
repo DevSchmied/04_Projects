@@ -535,7 +535,7 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	}
 
 	// Redirect back to book list after successful deletion
-	c.Redirect(http.StatusSeeOther, "/books")
+	c.Redirect(http.StatusSeeOther, "/books/list")
 }
 
 // findBookByParam is an internal helper that searches a book by ID or title.
