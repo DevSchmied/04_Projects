@@ -22,3 +22,11 @@ func (s IDSearch) Search(db *gorm.DB, value string) (*model.Book, error) {
 	err = db.First(&book, id).Error
 	return &book, err
 }
+
+type TitleSearch struct{}
+
+func (s TitleSearch) Search(db *gorm.DB, value string) (*model.Book, error) {
+	var book model.Book
+	err := db.Where("title LIKE ?", "%"+value+"%").First(&book).Error
+	return &book, err
+}
