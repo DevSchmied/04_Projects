@@ -22,18 +22,21 @@ type BookController struct {
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
 	{
-		books.GET("/", bc.ShowWelcomePage)                 // Display welcome page with logo
-		books.GET("/list", bc.GetAllBooks)                 // Read all
-		books.GET("/:id", bc.GetBookByID)                  // Read one
-		books.GET("/add", bc.ShowAddPage)                  // Show add form
-		books.POST("/add", bc.AddBook)                     // Create
-		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for selected book
-		books.GET("/update/search", bc.ShowSearchPage)     // Show search form
-		books.POST("/update/search", bc.FindBookForUpdate) // Search before update
-		books.POST("/update/:id", bc.UpdateBook)           // Update
-		books.GET("/delete/search", bc.ShowSearchPage)     // Show search form
-		books.POST("/delete/search", bc.FindBookForDelete) // Search before delete
-		books.POST("/delete/:id", bc.DeleteBook)           // Delete
+		books.GET("/", bc.ShowWelcomePage) // Display welcome page with logo
+		books.GET("/list", bc.GetAllBooks) // Read all books
+		books.GET("/add", bc.ShowAddPage)  // Show the form to add a new book
+		books.POST("/add", bc.AddBook)     // Create a new book entry
+
+		books.GET("/update/search", bc.ShowSearchPage)     // Show the search form before updating
+		books.POST("/update/search", bc.FindBookForUpdate) // Search for a book to update
+		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for a specific book
+		books.POST("/update/:id", bc.UpdateBook)           // Update the selected book
+
+		books.GET("/delete/search", bc.ShowSearchPage)     // Show the search form before deleting
+		books.POST("/delete/search", bc.FindBookForDelete) // Search for a book to delete
+		books.POST("/delete/:id", bc.DeleteBook)           // Delete the selected book
+
+		books.GET("/:id", bc.GetBookByID) // Read a single book by its ID (must be last)
 	}
 }
 
