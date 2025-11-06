@@ -7,10 +7,12 @@ import (
 	"gorm.io/gorm"
 )
 
+// SearchStrategy defines a common interface for different search strategies.
 type SearchStrategy interface {
 	Search(db *gorm.DB, value string) (*model.Book, error)
 }
 
+// IDSearch implements SearchStrategy for finding a book by its numeric ID.
 type IDSearch struct{}
 
 func (s IDSearch) Search(db *gorm.DB, value string) (*model.Book, error) {
@@ -23,6 +25,7 @@ func (s IDSearch) Search(db *gorm.DB, value string) (*model.Book, error) {
 	return &book, err
 }
 
+// TitleSearch implements SearchStrategy for finding a book by its title.
 type TitleSearch struct{}
 
 func (s TitleSearch) Search(db *gorm.DB, value string) (*model.Book, error) {

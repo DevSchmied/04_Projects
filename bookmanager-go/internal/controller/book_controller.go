@@ -619,6 +619,7 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	})
 }
 
+// findBookByParam chooses the right search strategy based on provided parameters.
 func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, error) {
 	var (
 		strategy SearchStrategy
