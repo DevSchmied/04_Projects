@@ -372,7 +372,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 				"Book":        book,
 			})
 		} else {
-			c.HTML(http.StatusInternalServerError, "books_search.html", gin.H{
+			c.HTML(http.StatusInternalServerError, "book_search.html", gin.H{
 				"Title":       "Book Search",
 				"PageTitle":   "Book Search",
 				"Description": "Enter either the book ID or title to search for a specific book.",
