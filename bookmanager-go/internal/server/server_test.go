@@ -1,8 +1,12 @@
 package server
 
 import (
+	"bookmanager-go/internal/model"
 	"testing"
 	"time"
+
+	"github.com/glebarez/sqlite"
+	"gorm.io/gorm"
 )
 
 // TestAdd1 verifies that the add1 helper function correctly increments integers.
@@ -68,4 +72,26 @@ func TestFormatDate(t *testing.T) {
 			}
 		})
 	}
+}
+
+// setupTestDB creates a temporary in-memory SQLite database
+// and seeds it with predictable data for each test run.
+func setupTestDB(t *testing.T) *gorm.DB {
+	t.Helper()
+
+	// --- ARRANGE ---
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{})
+	if err != nil {
+		t.Fatalf("Failed to connect to test DB: %v", err)
+	}
+
+	if err := db.AutoMigrate(&model.Book{}); err != nil {
+		t.Fatalf("Failed to migrate schema: %v", err)
+	}
+
+	// Insert predictable test data
+	db.Create(&model.Book{ID: 1, Title: "Go Patterns"})
+	db.Create(&model.Book{ID: 2, Title: "Concurrency in Go"})
+
+	return db
 }
