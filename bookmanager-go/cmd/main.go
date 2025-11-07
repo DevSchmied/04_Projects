@@ -32,7 +32,7 @@ func main() {
 
 	// addTestData(db)
 
-	serverAddress := "localhost:8080"                                                       // Server listening address
+	serverAddress := "0.0.0.0:8080"                                                         // Server listening address
 	staticRoute := "/static"                                                                // URL route for static files
 	staticPath := "./internal/view/static"                                                  // Local folder for static files
 	templatePath := "internal/view/templates/**/*.html"                                     // HTML templates location

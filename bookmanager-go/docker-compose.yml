@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  bookmanager:
+    build: .
+    container_name: bookmanager-go
+    ports:
+      - "8080:8080"
+    volumes:
+      # Persist database file outside container
+      - ./books.db:/app/books.db
+    environment:
+      - GIN_MODE=release
+    restart: unless-stopped

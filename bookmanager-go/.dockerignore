@@ -1,0 +1,19 @@
+# Ignore version control and editor files
+.git
+.gitignore
+.vscode
+.idea
+
+# Ignore OS or temp files
+*.log
+*.tmp
+*.bak
+__debug_bin
+
+# Ignore compiled binaries and local DB (will be mounted via volume)
+bookmanager-go
+books.db
+
+# Ignore test artifacts
+*.test
+coverage.out
