@@ -54,7 +54,7 @@ func (s *Server) setupTemplates() {
 	s.router.SetHTMLTemplate(tmpl)
 }
 
-// StartWebServer starts the web server using dependency injection.
+// Start starts the web server using dependency injection.
 func (s *Server) Start() error {
 	// Serve static files
 	s.router.Static(s.staticRoute, s.staticPath)
