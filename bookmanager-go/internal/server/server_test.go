@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bookmanager-go/internal/controller"
 	"bookmanager-go/internal/model"
 	"testing"
 	"time"
@@ -94,4 +95,47 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	db.Create(&model.Book{ID: 2, Title: "Concurrency in Go"})
 
 	return db
+}
+
+func TestSearchStrategies(t *testing.T) {
+	// --- ARRANGE ---
+	db := setupTestDB(t)
+
+	tests := []struct {
+		name      string
+		strategy  controller.SearchStrategy
+		input     string
+		wantTitle string
+		wantErr   bool
+	}{
+		{
+			name:      "IDSearch finds existing book",
+			strategy:  controller.IDSearch{},
+			input:     "1",
+			wantTitle: "Go Patterns",
+			wantErr:   false,
+		},
+		{
+			name:      "TitleSearch finds by partial match",
+			strategy:  controller.TitleSearch{},
+			input:     "Concurrency",
+			wantTitle: "Concurrency in Go",
+			wantErr:   false,
+		},
+		{
+			name:     "IDSearch fails for invalid ID format",
+			strategy: controller.IDSearch{},
+			input:    "abc",
+			wantErr:  true,
+		},
+		{
+			name:     "TitleSearch fails for non-existent title",
+			strategy: controller.TitleSearch{},
+			input:    "Unknown Book",
+			wantErr:  true,
+		},
+	}
+
+	_ = db
+	_ = tests
 }
