@@ -46,6 +46,26 @@ func (bc *BookController) renderHTML(c *gin.Context, status int, templateName st
 	c.HTML(status, templateName, data)
 }
 
+// findBookByParam chooses the right search strategy based on provided parameters.
+func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, error) {
+	var (
+		strategy SearchStrategy
+		value    string
+	)
+
+	if idParam != "" {
+		strategy = IDSearch{}
+		value = idParam
+	} else if title != "" {
+		strategy = TitleSearch{}
+		value = title
+	} else {
+		return nil, fmt.Errorf("no search parameter provided")
+	}
+
+	return strategy.Search(bc.DB, value)
+}
+
 // RegisterRoutes sets up all book-related routes.
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
@@ -645,24 +665,4 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		"Message":     fmt.Sprintf("Book with ID %d was successfully deleted.", id),
 		"MessageType": "success",
 	})
-}
-
-// findBookByParam chooses the right search strategy based on provided parameters.
-func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, error) {
-	var (
-		strategy SearchStrategy
-		value    string
-	)
-
-	if idParam != "" {
-		strategy = IDSearch{}
-		value = idParam
-	} else if title != "" {
-		strategy = TitleSearch{}
-		value = title
-	} else {
-		return nil, fmt.Errorf("no search parameter provided")
-	}
-
-	return strategy.Search(bc.DB, value)
 }
