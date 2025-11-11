@@ -18,6 +18,10 @@ type BookController struct {
 	DB *gorm.DB
 }
 
+// renderHTML is a helper function that renders an HTML template
+func (bc *BookController) renderHTML(c *gin.Context, status int, templateName string, data gin.H) {
+}
+
 // RegisterRoutes sets up all book-related routes.
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
