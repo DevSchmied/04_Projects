@@ -25,15 +25,23 @@ func (bc *BookController) renderHTML(c *gin.Context, status int, templateName st
 		data = gin.H{}
 	}
 
-	// --- Global default values ---
+	// Global default values
 	if _, exists := data["Title"]; !exists {
 		data["Title"] = "BookManager"
 	}
 	if _, exists := data["PageTitle"]; !exists {
-		data["PageTitle"] = "BookManager"
+		if status >= 400 {
+			data["PageTitle"] = "Error Situation"
+		} else {
+			data["PageTitle"] = "BookManager"
+		}
 	}
 	if _, exists := data["Description"]; !exists {
-		data["Description"] = "Manage your personal library — add, edit, and organize your favorite books."
+		if status >= 400 {
+			data["Description"] = "An unexpected error occurred. Please try again later."
+		} else {
+			data["Description"] = "Manage your personal library — add, edit, and organize your favorite books."
+		}
 	}
 	if _, exists := data["MessageType"]; !exists {
 		data["MessageType"] = ""
@@ -42,7 +50,7 @@ func (bc *BookController) renderHTML(c *gin.Context, status int, templateName st
 		data["Message"] = ""
 	}
 
-	// --- Render page ---
+	// Render page
 	c.HTML(status, templateName, data)
 }
 
