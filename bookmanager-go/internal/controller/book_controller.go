@@ -339,11 +339,7 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 func (bc *BookController) ShowSearchPage(c *gin.Context) {
 	path := c.FullPath()
 
-	var (
-		pageTitle   string
-		description string
-		action      string
-	)
+	var pageTitle, description, action string
 
 	if strings.Contains(path, "update") {
 		pageTitle = "Find Book to Update"
@@ -359,13 +355,11 @@ func (bc *BookController) ShowSearchPage(c *gin.Context) {
 		action = "update/search"
 	}
 
-	c.HTML(http.StatusOK, "book_search.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_search.html", gin.H{
 		"Title":       pageTitle,
 		"PageTitle":   pageTitle,
 		"Description": description,
 		"Action":      action,
-		"Message":     "",
-		"MessageType": "",
 	})
 }
 
@@ -377,7 +371,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
-		c.HTML(http.StatusOK, "book_search.html", gin.H{
+		bc.renderHTML(c, http.StatusOK, "book_search.html", gin.H{
 			"Title":       "Book Search",
 			"PageTitle":   "Book Search",
 			"Description": "Enter either the book ID or title to search for a specific book.",
@@ -391,34 +385,26 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 	book, err := bc.findBookByParam(idParam, title)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			c.HTML(http.StatusNotFound, "book_search.html", gin.H{
+			bc.renderHTML(c, http.StatusNotFound, "book_search.html", gin.H{
 				"Title":       "Book Search",
-				"PageTitle":   "Book Search",
-				"Description": "Enter either the book ID or title to search for a specific book.",
-				"Message":     "Book not found",
+				"Message":     "Book not found.",
 				"MessageType": "info",
-				"Book":        book,
 			})
 		} else {
-			c.HTML(http.StatusInternalServerError, "book_search.html", gin.H{
+			bc.renderHTML(c, http.StatusInternalServerError, "book_search.html", gin.H{
 				"Title":       "Book Search",
-				"PageTitle":   "Book Search",
-				"Description": "Enter either the book ID or title to search for a specific book.",
 				"Message":     "Failed to search for book.",
 				"MessageType": "danger",
-				"Book":        book,
 			})
 		}
 		return
 	}
 
 	// Render the edit page with the found book data
-	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_edit.html", gin.H{
 		"Title":       "Book Edit",
 		"PageTitle":   fmt.Sprintf("Edit: %s", book.Title),
 		"Description": "Update the book information and save your changes.",
-		"Message":     "",
-		"MessageType": "",
 		"Book":        book,
 	})
 }
@@ -437,10 +423,8 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 
 	// Validate required field
 	if title == "" {
-		c.HTML(http.StatusBadRequest, "book_edit.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "book_edit.html", gin.H{
 			"Title":       "Edit Book",
-			"PageTitle":   "Edit Book",
-			"Description": "Update the book information and save your changes.",
 			"Message":     "Title is required.",
 			"MessageType": "warning",
 		})
@@ -478,10 +462,8 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 	// Update database record
 	if err := bc.DB.Model(&model.Book{}).Where("id = ?", id).Updates(book).Error; err != nil {
 		log.Printf("Error updating book ID %d: %v\n", id, err)
-		c.HTML(http.StatusInternalServerError, "book_edit.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "book_edit.html", gin.H{
 			"Title":       "Edit Book",
-			"PageTitle":   "Edit Book",
-			"Description": "Update the book information and save your changes.",
 			"Message":     fmt.Sprintf("Failed to update book ID %d.", id),
 			"MessageType": "danger",
 			"Book":        book,
@@ -491,7 +473,7 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 
 	// Success message after update
 	log.Printf("Book with ID %d successfully updated.\n", id)
-	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_edit.html", gin.H{
 		"Title":       "Edit Book",
 		"PageTitle":   "Edit Book",
 		"Description": "Update the book information and save your changes.",
@@ -509,10 +491,8 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	// Validate that at least one parameter is provided
 	if idParam == "" && title == "" {
 		log.Println("ID or title is required.")
-		c.HTML(http.StatusBadRequest, "book_search.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "book_search.html", gin.H{
 			"Title":       "Find Book to Delete",
-			"PageTitle":   "Find Book to Delete",
-			"Description": "Enter either the book ID or title to search for a book you want to delete.",
 			"Message":     "Please provide either the book ID or title.",
 			"MessageType": "warning",
 			"Action":      "delete/search",
@@ -525,10 +505,8 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book not found for ID '%s' or title '%s'\n", idParam, title)
-			c.HTML(http.StatusNotFound, "book_search.html", gin.H{
+			bc.renderHTML(c, http.StatusNotFound, "book_search.html", gin.H{
 				"Title":       "Find Book to Delete",
-				"PageTitle":   "Find Book to Delete",
-				"Description": "Enter either the book ID or title to search for a book you want to delete.",
 				"Message":     "Book not found.",
 				"MessageType": "info",
 				"Action":      "delete/search",
@@ -537,10 +515,8 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 		}
 
 		log.Printf("Error searching for book: %v\n", err)
-		c.HTML(http.StatusInternalServerError, "book_search.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "book_search.html", gin.H{
 			"Title":       "Find Book to Delete",
-			"PageTitle":   "Find Book to Delete",
-			"Description": "Enter either the book ID or title to search for a book you want to delete.",
 			"Message":     "An unexpected error occurred while searching for the book.",
 			"MessageType": "danger",
 			"Action":      "delete/search",
@@ -549,12 +525,10 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 	}
 
 	// Render the delete confirmation page
-	c.HTML(http.StatusOK, "book_delete.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_delete.html", gin.H{
 		"Title":       "Confirm Book Deletion",
 		"PageTitle":   "Confirm Book Deletion",
 		"Description": "Please confirm that you want to permanently delete this book from your library.",
-		"Message":     "",
-		"MessageType": "",
 		"Book":        book,
 	})
 }
@@ -571,10 +545,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	// Validate and convert ID
 	if idParam == "" {
 		log.Println("ID is required for deletion")
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"PageTitle":   "Your Library",
-			"Description": "List of all books currently stored in your library.",
 			"Message":     "Book ID is required for deletion.",
 			"MessageType": "warning",
 		})
@@ -584,10 +556,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	id, err = strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid ID format: %v\n", err)
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"PageTitle":   "Your Library",
-			"Description": "List of all books currently stored in your library.",
 			"Message":     fmt.Sprintf("Invalid ID format: %v", err),
 			"MessageType": "danger",
 		})
@@ -599,10 +569,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	if err = bc.DB.First(&book, uint(id)).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book with ID %d not found\n", id)
-			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+			bc.renderHTML(c, http.StatusNotFound, "books_list.html", gin.H{
 				"Title":       "Book List",
-				"PageTitle":   "Your Library",
-				"Description": "List of all books currently stored in your library.",
 				"Message":     fmt.Sprintf("Book with ID %d not found.", id),
 				"MessageType": "info",
 			})
@@ -610,10 +578,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		}
 
 		log.Printf("Error fetching book before deletion: %v\n", err)
-		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"PageTitle":   "Your Library",
-			"Description": "List of all books currently stored in your library.",
 			"Message":     "An unexpected error occurred while checking the book.",
 			"MessageType": "danger",
 		})
@@ -623,10 +589,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 	// Delete book record from database
 	if err = bc.DB.Delete(&book).Error; err != nil {
 		log.Printf("Error deleting book ID %d: %v\n", id, err)
-		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"PageTitle":   "Your Library",
-			"Description": "List of all books currently stored in your library.",
 			"Message":     "Failed to delete the book.",
 			"MessageType": "danger",
 		})
@@ -635,7 +599,7 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 
 	// Redirect back to book list with success info
 	log.Printf("Book with ID %d successfully deleted.\n", id)
-	c.HTML(http.StatusOK, "books_list.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
 		"Title":       "Book List",
 		"PageTitle":   "Your Library",
 		"Description": "List of all books currently stored in your library.",
