@@ -105,7 +105,7 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	// Try to load all books from the database
 	if err := bc.DB.Find(&books).Error; err != nil {
 		log.Printf("Failed to retrieve books: %v\n", err)
-		c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 			"Title":       "Book List",
 			"PageTitle":   "Your Library",
 			"Description": "List of all books currently stored in your library.",
@@ -118,24 +118,21 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 
 	// Show info message if no books are found
 	if len(books) == 0 {
-		c.HTML(http.StatusOK, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
 			"Title":       "Book List",
 			"PageTitle":   "Your Library",
 			"Description": "List of all books currently stored in your library.",
-			"Message":     "There are no saved books yet. Add your first book to the library!",
+			"Message":     "There are no saved books yet. Add your first book!",
 			"MessageType": "info",
 			"Books":       books,
 		})
 		return
 	}
 
-	// Render the list of books using an HTML template
-	c.HTML(http.StatusOK, "books_list.html", gin.H{
+	// Render the list of books
+	bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
 		"Title":       "Book List",
-		"PageTitle":   "Your Library",
 		"Description": "List of all books currently stored in your library.",
-		"Message":     "",
-		"MessageType": "",
 		"Books":       books,
 	})
 }
