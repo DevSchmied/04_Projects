@@ -20,6 +20,30 @@ type BookController struct {
 
 // renderHTML is a helper function that renders an HTML template
 func (bc *BookController) renderHTML(c *gin.Context, status int, templateName string, data gin.H) {
+	// Ensure the map is initialized
+	if data == nil {
+		data = gin.H{}
+	}
+
+	// --- Global default values ---
+	if _, exists := data["Title"]; !exists {
+		data["Title"] = "BookManager"
+	}
+	if _, exists := data["PageTitle"]; !exists {
+		data["PageTitle"] = "BookManager"
+	}
+	if _, exists := data["Description"]; !exists {
+		data["Description"] = "Manage your personal library — add, edit, and organize your favorite books."
+	}
+	if _, exists := data["MessageType"]; !exists {
+		data["MessageType"] = ""
+	}
+	if _, exists := data["Message"]; !exists {
+		data["Message"] = ""
+	}
+
+	// --- Render page ---
+	c.HTML(status, templateName, data)
 }
 
 // RegisterRoutes sets up all book-related routes.
