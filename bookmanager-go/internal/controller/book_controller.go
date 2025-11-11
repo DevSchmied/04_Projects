@@ -113,8 +113,6 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 		log.Printf("Failed to retrieve books: %v\n", err)
 		bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"PageTitle":   "Your Library",
-			"Description": "List of all books currently stored in your library.",
 			"Message":     "Failed to retrieve books",
 			"MessageType": "warning",
 			"Books":       books,
@@ -152,10 +150,8 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid book ID format: %v\n", err)
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book Details",
-			"PageTitle":   "Details of book",
-			"Description": "Detailed information about the selected book from your library.",
 			"Message":     "Invalid book ID format",
 			"MessageType": "danger",
 			"Book":        book,
@@ -165,10 +161,8 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
 		log.Printf("Invalid book ID value: %d\n", id)
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book Details",
-			"PageTitle":   "Details of book",
-			"Description": "Detailed information about the selected book from your library.",
 			"Message":     "Invalid book ID value",
 			"MessageType": "warning",
 			"Book":        book,
@@ -180,20 +174,16 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book with ID %d not found\n", id)
-			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+			bc.renderHTML(c, http.StatusNotFound, "books_list.html", gin.H{
 				"Title":       "Book Details",
-				"PageTitle":   "Details of book",
-				"Description": "Detailed information about the selected book from your library.",
 				"Message":     "Book not found.",
 				"MessageType": "info",
 				"Book":        book,
 			})
 		} else {
 			log.Printf("Error fetching book with ID %d: %v\n", id, err)
-			c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+			bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 				"Title":       "Book Details",
-				"PageTitle":   "Details of book",
-				"Description": "Detailed information about the selected book from your library.",
 				"Message":     "An unexpected database error occurred.",
 				"MessageType": "danger",
 				"Book":        book,
@@ -203,24 +193,20 @@ func (bc *BookController) GetBookByID(c *gin.Context) {
 	}
 
 	// Render book details in an HTML template
-	c.HTML(http.StatusOK, "book_details.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_details.html", gin.H{
 		"Title":       "Book Details",
 		"PageTitle":   fmt.Sprintf("Details of '%s'", book.Title),
 		"Description": "Detailed information about the selected book from your library.",
-		"Message":     "",
-		"MessageType": "",
 		"Book":        book,
 	})
 }
 
 // ShowAddPage displays the HTML form to add a new book.
 func (bc *BookController) ShowAddPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "book_add.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_add.html", gin.H{
 		"Title":       "Add Book",
 		"PageTitle":   "Add a New Book",
 		"Description": "Enter the details of the new book and click Save.",
-		"Message":     "",
-		"MessageType": "",
 	})
 }
 
@@ -237,10 +223,8 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 	// Validate required field
 	if title == "" {
-		c.HTML(http.StatusBadRequest, "book_add.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "book_add.html", gin.H{
 			"Title":       "Add Book",
-			"PageTitle":   "Add a New Book",
-			"Description": "Enter the details of the new book and click Save.",
 			"Message":     "Title is required.",
 			"MessageType": "warning",
 		})
@@ -275,10 +259,8 @@ func (bc *BookController) AddBook(c *gin.Context) {
 	// Save to database
 	if err := bc.DB.Create(&book).Error; err != nil {
 		log.Printf("Error saving book: %v\n", err)
-		c.HTML(http.StatusInternalServerError, "book_add.html", gin.H{
+		bc.renderHTML(c, http.StatusInternalServerError, "book_add.html", gin.H{
 			"Title":       "Add Book",
-			"PageTitle":   "Add a New Book",
-			"Description": "Enter the details of the new book and click Save.",
 			"Message":     "Failed to save book.",
 			"MessageType": "danger",
 		})
@@ -299,10 +281,8 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	id, err := strconv.Atoi(idParam)
 	if err != nil {
 		log.Printf("Invalid book ID format: %v\n", err)
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Edit Book",
-			"PageTitle":   "Edit Book",
-			"Description": "Update the book information and save your changes.",
 			"Message":     "Invalid book ID format",
 			"MessageType": "danger",
 			"Book":        book,
@@ -312,10 +292,8 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	// Ensure that the ID is greater than zero
 	if id <= 0 {
 		log.Printf("Invalid book ID value: %d\n", id)
-		c.HTML(http.StatusBadRequest, "books_list.html", gin.H{
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Edit Book",
-			"PageTitle":   "Edit Book",
-			"Description": "Update the book information and save your changes.",
 			"Message":     "Invalid book ID value",
 			"MessageType": "warning",
 			"Book":        book,
@@ -327,7 +305,7 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	if err := bc.DB.First(&book, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			log.Printf("Book with ID %d not found\n", id)
-			c.HTML(http.StatusNotFound, "books_list.html", gin.H{
+			bc.renderHTML(c, http.StatusNotFound, "books_list.html", gin.H{
 				"Title":       "Edit Book",
 				"PageTitle":   "Edit Book",
 				"Description": "Update the book information and save your changes.",
@@ -338,10 +316,8 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 			return
 		} else {
 			log.Printf("Error fetching book with ID %d: %v\n", id, err)
-			c.HTML(http.StatusInternalServerError, "books_list.html", gin.H{
+			bc.renderHTML(c, http.StatusInternalServerError, "books_list.html", gin.H{
 				"Title":       "Edit Book",
-				"PageTitle":   "Edit Book",
-				"Description": "Update the book information and save your changes.",
 				"Message":     "An unexpected database error occurred.",
 				"MessageType": "danger",
 				"Book":        book,
@@ -351,12 +327,10 @@ func (bc *BookController) ShowEditPage(c *gin.Context) {
 	}
 
 	// Render book details in an HTML template
-	c.HTML(http.StatusOK, "book_edit.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "book_edit.html", gin.H{
 		"Title":       "Edit Book",
 		"PageTitle":   fmt.Sprintf("Edit: %s", book.Title),
 		"Description": "Update the book information and save your changes.",
-		"Message":     "",
-		"MessageType": "",
 		"Book":        book,
 	})
 }
