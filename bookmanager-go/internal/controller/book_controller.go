@@ -90,12 +90,10 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 
 // ShowWelcomePage renders the welcome page.
 func (bc *BookController) ShowWelcomePage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", gin.H{
+	bc.renderHTML(c, http.StatusOK, "index.html", gin.H{
 		"Title":       "Welcome to BookManager",
 		"PageTitle":   "Welcome to BookManager",
 		"Description": "Manage your personal library — add, edit, and organize your favorite books.",
-		"Message":     "",
-		"MessageType": "",
 	})
 }
 
