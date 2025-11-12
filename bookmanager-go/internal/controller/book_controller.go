@@ -157,32 +157,18 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 
 // GetBookByID renders a page showing details of a single book by its ID.
 func (bc *BookController) GetBookByID(c *gin.Context) {
-	idParam := c.Param("id")
-	var book model.Book
-
-	// Prove that the ID is a valid integer
-	id, err := strconv.Atoi(idParam)
+	id, err := parseIDParam(c)
 	if err != nil {
-		log.Printf("Invalid book ID format: %v\n", err)
+		log.Printf("Invalid book ID: %v\n", err)
 		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book Details",
-			"Message":     "Invalid book ID format",
-			"MessageType": "danger",
-			"Book":        book,
-		})
-		return
-	}
-	// Ensure that the ID is greater than zero
-	if id <= 0 {
-		log.Printf("Invalid book ID value: %d\n", id)
-		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
-			"Title":       "Book Details",
-			"Message":     "Invalid book ID value",
+			"Message":     err.Error(),
 			"MessageType": "warning",
-			"Book":        book,
 		})
 		return
 	}
+
+	var book model.Book
 
 	// Retrieve book from database
 	if err := bc.DB.First(&book, id).Error; err != nil {
