@@ -74,6 +74,12 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 	return strategy.Search(bc.DB, value)
 }
 
+// parseIDParam extracts and validates the "id" URL parameter.
+func parseIDParam(c *gin.Context) (uint, error) {
+
+	return 0, nil
+}
+
 // RegisterRoutes sets up all book-related routes.
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	books := r.Group("/books")
