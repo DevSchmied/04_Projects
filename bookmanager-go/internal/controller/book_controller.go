@@ -520,31 +520,13 @@ func (bc *BookController) FindBookForDelete(c *gin.Context) {
 
 // DeleteBook deletes a book from the database based on its ID.
 func (bc *BookController) DeleteBook(c *gin.Context) {
-	idParam := c.Param("id")
-
-	var (
-		id  int
-		err error
-	)
-
-	// Validate and convert ID
-	if idParam == "" {
-		log.Println("ID is required for deletion")
-		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
-			"Title":       "Book List",
-			"Message":     "Book ID is required for deletion.",
-			"MessageType": "warning",
-		})
-		return
-	}
-
-	id, err = strconv.Atoi(idParam)
+	id, err := parseIDParam(c)
 	if err != nil {
-		log.Printf("Invalid ID format: %v\n", err)
+		log.Printf("Invalid book ID: %v\n", err)
 		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
 			"Title":       "Book List",
-			"Message":     fmt.Sprintf("Invalid ID format: %v", err),
-			"MessageType": "danger",
+			"Message":     err.Error(),
+			"MessageType": "warning",
 		})
 		return
 	}
