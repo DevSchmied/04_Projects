@@ -76,8 +76,16 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 
 // parseIDParam extracts and validates the "id" URL parameter.
 func parseIDParam(c *gin.Context) (uint, error) {
+	idParam := c.Param("id")
+	if idParam == "" {
+		return 0, fmt.Errorf("missing ID parameter")
+	}
 
-	return 0, nil
+	id, err := strconv.Atoi(idParam)
+	if err != nil || id <= 0 {
+		return 0, fmt.Errorf("invalid ID: %s", idParam)
+	}
+	return uint(id), nil
 }
 
 // RegisterRoutes sets up all book-related routes.
