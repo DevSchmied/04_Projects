@@ -273,33 +273,18 @@ func (bc *BookController) AddBook(c *gin.Context) {
 
 // ShowEditPage loads the edit form pre-filled with book data
 func (bc *BookController) ShowEditPage(c *gin.Context) {
+	id, err := parseIDParam(c)
+	if err != nil {
+		log.Printf("Invalid book ID: %v\n", err)
+		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
+			"Title":       "Edit Book",
+			"Message":     err.Error(),
+			"MessageType": "warning",
+		})
+		return
+	}
 
 	var book model.Book
-	idParam := c.Param("id")
-
-	// Prove that the ID is a valid integer
-	id, err := strconv.Atoi(idParam)
-	if err != nil {
-		log.Printf("Invalid book ID format: %v\n", err)
-		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
-			"Title":       "Edit Book",
-			"Message":     "Invalid book ID format",
-			"MessageType": "danger",
-			"Book":        book,
-		})
-		return
-	}
-	// Ensure that the ID is greater than zero
-	if id <= 0 {
-		log.Printf("Invalid book ID value: %d\n", id)
-		bc.renderHTML(c, http.StatusBadRequest, "books_list.html", gin.H{
-			"Title":       "Edit Book",
-			"Message":     "Invalid book ID value",
-			"MessageType": "warning",
-			"Book":        book,
-		})
-		return
-	}
 
 	// Retrieve book from database
 	if err := bc.DB.First(&book, id).Error; err != nil {
