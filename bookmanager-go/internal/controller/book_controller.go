@@ -94,8 +94,10 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 	{
 		books.GET("/", bc.ShowWelcomePage) // Display welcome page with logo
 		books.GET("/list", bc.GetAllBooks) // Read all books
-		books.GET("/add", bc.ShowAddPage)  // Show the form to add a new book
-		books.POST("/add", bc.AddBook)     // Create a new book entry
+
+		adds := books.Group("/add")
+		adds.GET("", bc.ShowAddPage) // Show the form to add a new book
+		adds.POST("", bc.AddBook)    // Create a new book entry
 
 		updates := books.Group("/update")
 		updates.GET("/search", bc.ShowSearchPage)     // Show the search form before updating
