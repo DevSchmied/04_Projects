@@ -97,10 +97,11 @@ func (bc *BookController) RegisterRoutes(r *gin.Engine) {
 		books.GET("/add", bc.ShowAddPage)  // Show the form to add a new book
 		books.POST("/add", bc.AddBook)     // Create a new book entry
 
-		books.GET("/update/search", bc.ShowSearchPage)     // Show the search form before updating
-		books.POST("/update/search", bc.FindBookForUpdate) // Search for a book to update
-		books.GET("/update/:id", bc.ShowEditPage)          // Show edit form for a specific book
-		books.POST("/update/:id", bc.UpdateBook)           // Update the selected book
+		updates := books.Group("/update")
+		updates.GET("/search", bc.ShowSearchPage)     // Show the search form before updating
+		updates.POST("/search", bc.FindBookForUpdate) // Search for a book to update
+		updates.GET("/:id", bc.ShowEditPage)          // Show edit form for a specific book
+		updates.POST("/:id", bc.UpdateBook)           // Update the selected book
 
 		books.GET("/delete/search", bc.ShowSearchPage)     // Show the search form before deleting
 		books.POST("/delete/search", bc.FindBookForDelete) // Search for a book to delete
