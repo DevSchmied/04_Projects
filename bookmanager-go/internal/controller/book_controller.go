@@ -366,6 +366,7 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 			"Description": "Enter either the book ID or title to search for a specific book.",
 			"Message":     "Please provide either ID or title to search.",
 			"MessageType": "info",
+			"Action":      "update/search",
 		})
 		return
 	}
@@ -378,12 +379,14 @@ func (bc *BookController) FindBookForUpdate(c *gin.Context) {
 				"Title":       "Book Search",
 				"Message":     "Book not found.",
 				"MessageType": "info",
+				"Action":      "update/search",
 			})
 		} else {
 			bc.renderHTML(c, http.StatusInternalServerError, "book_search.html", gin.H{
 				"Title":       "Book Search",
 				"Message":     "Failed to search for book.",
 				"MessageType": "danger",
+				"Action":      "update/search",
 			})
 		}
 		return
