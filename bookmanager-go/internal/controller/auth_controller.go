@@ -85,3 +85,44 @@ func (ac *AuthHTMLController) ShowLoginPage(c *gin.Context) {
 		"Description": "Enter your email and password.",
 	})
 }
+
+// LoginUser handles login form submission (step 1: input + user + password)
+func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+
+	bc := BookController{DB: ac.DB} // for renderHTML()
+
+	// Validate input
+	if email == "" || password == "" {
+		bc.renderHTML(c, http.StatusBadRequest, "login.html", gin.H{
+			"PageTitle":   "Login",
+			"Message":     "Email and password are required.",
+			"MessageType": "warning",
+		})
+		return
+	}
+
+	// Look up user
+	var user model.User
+	if err := ac.DB.Where("email = ?", email).First(&user).Error; err != nil {
+		log.Printf("Login error: user not found (%s)\n", email)
+		bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+			"PageTitle":   "Login",
+			"Message":     "User not found.",
+			"MessageType": "danger",
+		})
+		return
+	}
+
+	// Validate password
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
+		log.Printf("Login error: invalid password for user %s\n", email)
+		bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+			"PageTitle":   "Login",
+			"Message":     "Invalid password.",
+			"MessageType": "danger",
+		})
+		return
+	}
+}
