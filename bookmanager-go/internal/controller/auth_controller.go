@@ -33,7 +33,7 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 	if email == "" || password == "" {
 		bc := BookController{DB: ac.DB} // HTML renderer
 		bc.renderHTML(c, http.StatusBadRequest, "register.html", gin.H{
-			"PageTitle":   "Register",
+			"Title":       "Register",
 			"Message":     "Email and password are required.",
 			"MessageType": "warning",
 		})
@@ -46,7 +46,7 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 		log.Printf("Error hashing password: %v\n", err)
 		bc := BookController{DB: ac.DB} // HTML renderer
 		bc.renderHTML(c, http.StatusInternalServerError, "register.html", gin.H{
-			"PageTitle":   "Register",
+			"Title":       "Register",
 			"Message":     "Internal error.",
 			"MessageType": "danger",
 		})
@@ -64,7 +64,7 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 		log.Printf("Error creating user: %v\n", err)
 		bc := BookController{DB: ac.DB} // HTML renderer
 		bc.renderHTML(c, http.StatusBadRequest, "register.html", gin.H{
-			"PageTitle":   "Register",
+			"Title":       "Register",
 			"Message":     "User already exists.",
 			"MessageType": "warning",
 		})
@@ -73,4 +73,15 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 
 	// Redirect to login page on success
 	c.Redirect(http.StatusSeeOther, "/login")
+}
+
+// ShowLoginPage displays the login form
+func (ac *AuthHTMLController) ShowLoginPage(c *gin.Context) {
+	bc := BookController{DB: ac.DB}
+
+	// Render login HTML page
+	bc.renderHTML(c, http.StatusOK, "login.html", gin.H{
+		"PageTitle":   "Login",
+		"Description": "Enter your email and password.",
+	})
 }
