@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 // AuthRequired returns a middleware that protects routes
@@ -13,23 +14,32 @@ func AuthRequired() gin.HandlerFunc {
 		// Read Authorization header
 		authHeader := c.GetHeader("Authorization")
 
-		// Check if header exists and starts with "Bearer "
+		// Check header format
 		if authHeader == "" || !strings.HasPrefix(authHeader, "Bearer ") {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Missing or invalid Authorization header"})
 			return
 		}
 
-		// Extract the token string (remove "Bearer ")
+		// Extract raw JWT string
 		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-		// Validate the JWT token
+		// Validate token signature & expiration
 		token, err := ValidateToken(tokenString)
 		if err != nil || !token.Valid {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			return
 		}
 
-		// Pass control to next handler
+		// Parse claims from token (payload)
+		claims := token.Claims.(jwt.MapClaims)
+
+		// Convert "sub" claim (float64) to uint
+		userID := uint(claims["sub"].(float64))
+
+		// Save userID into Gin context (available for next handlers)
+		c.Set("userID", userID)
+
+		// Continue request processing
 		c.Next()
 	}
 }
