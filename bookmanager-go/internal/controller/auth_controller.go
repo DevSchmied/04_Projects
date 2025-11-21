@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"bookmanager-go/internal/auth"
 	"bookmanager-go/internal/model"
 	"log"
 	"net/http"
@@ -125,4 +126,29 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 		})
 		return
 	}
+	// Create JWT token
+	token, err := auth.CreateToken(user.ID)
+	if err != nil {
+		log.Printf("Error creating JWT: %v\n", err)
+		bc.renderHTML(c, http.StatusInternalServerError, "login.html", gin.H{
+			"PageTitle":   "Login",
+			"Message":     "Internal server error.",
+			"MessageType": "danger",
+		})
+		return
+	}
+
+	// Set JWT cookie (1 day)
+	c.SetCookie(
+		"jwt",
+		token,
+		3600*24,
+		"/",
+		"",
+		false, // not HTTPS only
+		true,  // httpOnly
+	)
+
+	// Success → redirect to book list
+	c.Redirect(http.StatusSeeOther, "/books/list")
 }
