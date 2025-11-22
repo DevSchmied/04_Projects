@@ -1,6 +1,7 @@
 package server
 
 import (
+	"bookmanager-go/internal/auth"
 	"bookmanager-go/internal/controller"
 	"html/template"
 	"time"
@@ -61,6 +62,21 @@ func (s *Server) Start() error {
 
 	// Register custom template functions and load all templates.
 	s.setupTemplates()
+
+	// Initialize HTML authentication controller
+	authHTML := controller.AuthHTMLController{DB: s.bookController.DB}
+
+	// Public registration routes
+	s.router.GET("/register", authHTML.ShowRegisterPage)
+	s.router.POST("/register", authHTML.RegisterUser)
+
+	// Public login routes
+	s.router.GET("/login", authHTML.ShowLoginPage)
+	s.router.POST("/login", authHTML.LoginUser)
+
+	// Protected /books/* routes (requires valid JWT cookie)
+	books := s.router.Group("/books")
+	books.Use(auth.AuthRequiredHTML())
 
 	// Register routes for controllers
 	s.bookController.RegisterRoutes(s.router)

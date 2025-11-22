@@ -35,26 +35,24 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 
 // RegisterRoutes sets up all book-related routes.
 func (bc *BookController) RegisterRoutes(r *gin.Engine) {
-	books := r.Group("/books")
-	{
-		books.GET("/", bc.ShowWelcomePage) // Display welcome page with logo
-		books.GET("/list", bc.GetAllBooks) // Read all books
 
-		adds := books.Group("/add")  // Group for add-related routes
-		adds.GET("", bc.ShowAddPage) // Show the form to add a new book
-		adds.POST("", bc.AddBook)    // Create a new book entry
+	r.GET("/", bc.ShowWelcomePage) // Display welcome page with logo
+	r.GET("/list", bc.GetAllBooks) // Read all books
 
-		updates := books.Group("/update")             // Group for update-related routes
-		updates.GET("/search", bc.ShowSearchPage)     // Show the search form before updating
-		updates.POST("/search", bc.FindBookForUpdate) // Search for a book to update
-		updates.GET("/:id", bc.ShowEditPage)          // Show edit form for a specific book
-		updates.POST("/:id", bc.UpdateBook)           // Update the selected book
+	adds := r.Group("/add")      // Group for add-related routes
+	adds.GET("", bc.ShowAddPage) // Show the form to add a new book
+	adds.POST("", bc.AddBook)    // Create a new book entry
 
-		deletes := books.Group("/delete")             // Group for delete-related routes
-		deletes.GET("/search", bc.ShowSearchPage)     // Show the search form before deleting
-		deletes.POST("/search", bc.FindBookForDelete) // Search for a book to delete
-		deletes.POST("/:id", bc.DeleteBook)           // Delete the selected book
+	updates := r.Group("/update")                 // Group for update-related routes
+	updates.GET("/search", bc.ShowSearchPage)     // Show the search form before updating
+	updates.POST("/search", bc.FindBookForUpdate) // Search for a book to update
+	updates.GET("/:id", bc.ShowEditPage)          // Show edit form for a specific book
+	updates.POST("/:id", bc.UpdateBook)           // Update the selected book
 
-		books.GET("/:id", bc.GetBookByID) // Read a single book by its ID (must be last)
-	}
+	deletes := r.Group("/delete")                 // Group for delete-related routes
+	deletes.GET("/search", bc.ShowSearchPage)     // Show the search form before deleting
+	deletes.POST("/search", bc.FindBookForDelete) // Search for a book to delete
+	deletes.POST("/:id", bc.DeleteBook)           // Delete the selected book
+
+	r.GET("/:id", bc.GetBookByID) // Read a single book by its ID (must be last)
 }
