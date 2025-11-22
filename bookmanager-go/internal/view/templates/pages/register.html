@@ -1,0 +1,8 @@
+{{template "head" .}}
+<body>
+
+  {{template "intro" .}}
+
+  {{if .Message}}
+    {{template "alert" .}}
+  {{end}}
