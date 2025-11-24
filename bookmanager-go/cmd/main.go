@@ -30,6 +30,11 @@ func main() {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
+	// Run AutoMigrate to create the User table if it doesn't exist
+	if err := db.AutoMigrate(&model.User{}); err != nil {
+		log.Fatalf("Failed to migrate database: %v", err)
+	}
+
 	// addTestData(db)
 
 	serverAddress := "0.0.0.0:8080"                                                         // Server listening address
