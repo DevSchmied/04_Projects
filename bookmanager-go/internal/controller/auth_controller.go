@@ -186,3 +186,20 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	// Success → redirect to book list
 	c.Redirect(http.StatusSeeOther, "/books/list")
 }
+
+// LogoutUser removes the JWT cookie and redirects to the login page.
+func (ac *AuthHTMLController) LogoutUser(c *gin.Context) {
+
+	// Delete JWT cookie by setting an expired value
+	c.SetCookie(
+		"jwt",
+		"",
+		-1,
+		"/",
+		"",
+		false,
+		true,
+	)
+
+	c.Redirect(http.StatusSeeOther, "/login")
+}

@@ -74,6 +74,9 @@ func (s *Server) Start() error {
 	s.router.GET("/login", authHTML.ShowLoginPage)
 	s.router.POST("/login", authHTML.LoginUser)
 
+	// Public logout route
+	s.router.GET("/logout", authHTML.LogoutUser)
+
 	// Protected /books/* routes (requires valid JWT cookie)
 	books := s.router.Group("/books")
 	books.Use(auth.AuthRequiredHTML())
