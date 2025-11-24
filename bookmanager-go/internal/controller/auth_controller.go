@@ -3,6 +3,7 @@ package controller
 import (
 	"bookmanager-go/internal/auth"
 	"bookmanager-go/internal/model"
+	"errors"
 	"log"
 	"net/http"
 	"strings"
@@ -124,11 +125,24 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	// Look up user
 	var user model.User
 	if err := ac.DB.Where("email = ?", email).First(&user).Error; err != nil {
-		log.Printf("Login error: user not found (%s)\n", email)
-		bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+
+		// Expected case: user not found
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+				"Title":       "Login",
+				"PageTitle":   "Login",
+				"Message":     "User not found.",
+				"MessageType": "warning",
+			})
+			return
+		}
+
+		// Unexpected DB error
+		log.Printf("Login DB error: %v\n", err)
+		bc.renderHTML(c, http.StatusInternalServerError, "login.html", gin.H{
 			"Title":       "Login",
 			"PageTitle":   "Login",
-			"Message":     "User not found.",
+			"Message":     "Internal error. Please try again later.",
 			"MessageType": "danger",
 		})
 		return
