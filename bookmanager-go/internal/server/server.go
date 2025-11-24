@@ -63,19 +63,7 @@ func (s *Server) Start() error {
 	// Register custom template functions and load all templates.
 	s.setupTemplates()
 
-	// Initialize HTML authentication controller
-	authHTML := controller.AuthHTMLController{DB: s.bookController.DB}
-
-	// Public registration routes
-	s.router.GET("/register", authHTML.ShowRegisterPage)
-	s.router.POST("/register", authHTML.RegisterUser)
-
-	// Public login routes
-	s.router.GET("/login", authHTML.ShowLoginPage)
-	s.router.POST("/login", authHTML.LoginUser)
-
-	// Public logout route
-	s.router.GET("/logout", authHTML.LogoutUser)
+	s.registerPublicRoutes()
 
 	// Protected /books/* routes (requires valid JWT cookie)
 	books := s.router.Group("/books")
@@ -96,4 +84,22 @@ func add1(i int) int {
 // formatDate formats a time.Time value into a human-readable string.
 func formatDate(d time.Time) string {
 	return d.Format("2 January 2006")
+}
+
+// registerPublicRoutes defines all routes that do not require authentication.
+func (s *Server) registerPublicRoutes() {
+	// Initialize HTML authentication controller
+	authHTML := controller.AuthHTMLController{DB: s.bookController.DB}
+
+	// Public registration routes
+	s.router.GET("/register", authHTML.ShowRegisterPage)
+	s.router.POST("/register", authHTML.RegisterUser)
+
+	// Public login routes
+	s.router.GET("/login", authHTML.ShowLoginPage)
+	s.router.POST("/login", authHTML.LoginUser)
+
+	// Public logout route
+	s.router.GET("/logout", authHTML.LogoutUser)
+
 }
