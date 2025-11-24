@@ -82,6 +82,7 @@ func (ac *AuthHTMLController) ShowLoginPage(c *gin.Context) {
 
 	// Render login HTML page
 	bc.renderHTML(c, http.StatusOK, "login.html", gin.H{
+		"Title":       "Login",
 		"PageTitle":   "Login",
 		"Description": "Enter your email and password.",
 	})
@@ -97,6 +98,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	// Validate input
 	if email == "" || password == "" {
 		bc.renderHTML(c, http.StatusBadRequest, "login.html", gin.H{
+			"Title":       "Login",
 			"PageTitle":   "Login",
 			"Message":     "Email and password are required.",
 			"MessageType": "warning",
@@ -109,6 +111,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	if err := ac.DB.Where("email = ?", email).First(&user).Error; err != nil {
 		log.Printf("Login error: user not found (%s)\n", email)
 		bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+			"Title":       "Login",
 			"PageTitle":   "Login",
 			"Message":     "User not found.",
 			"MessageType": "danger",
@@ -120,6 +123,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		log.Printf("Login error: invalid password for user %s\n", email)
 		bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
+			"Title":       "Login",
 			"PageTitle":   "Login",
 			"Message":     "Invalid password.",
 			"MessageType": "danger",
@@ -131,6 +135,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 	if err != nil {
 		log.Printf("Error creating JWT: %v\n", err)
 		bc.renderHTML(c, http.StatusInternalServerError, "login.html", gin.H{
+			"Title":       "Login",
 			"PageTitle":   "Login",
 			"Message":     "Internal server error.",
 			"MessageType": "danger",
