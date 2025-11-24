@@ -1,0 +1,18 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# SQLite database
+*.db
+
+# Binaries
+/bin/
+*.exe
+*.dll
+
+# Logs
+*.log
+
+# IDE configs
+.vscode/
