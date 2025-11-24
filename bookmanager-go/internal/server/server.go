@@ -79,7 +79,7 @@ func (s *Server) Start() error {
 	books.Use(auth.AuthRequiredHTML())
 
 	// Register routes for controllers
-	s.bookController.RegisterRoutes(s.router)
+	s.bookController.RegisterRoutes(books)
 
 	// start the HTTP server
 	return s.router.Run(s.address)

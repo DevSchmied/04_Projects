@@ -34,7 +34,7 @@ func (bc *BookController) findBookByParam(idParam, title string) (*model.Book, e
 }
 
 // RegisterRoutes sets up all book-related routes.
-func (bc *BookController) RegisterRoutes(r *gin.Engine) {
+func (bc *BookController) RegisterRoutes(r *gin.RouterGroup) {
 
 	r.GET("/", bc.ShowWelcomePage) // Display welcome page with logo
 	r.GET("/list", bc.GetAllBooks) // Read all books
