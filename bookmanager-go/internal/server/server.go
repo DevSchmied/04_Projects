@@ -63,14 +63,8 @@ func (s *Server) Start() error {
 	// Register custom template functions and load all templates.
 	s.setupTemplates()
 
-	s.registerPublicRoutes()
-
-	// Protected /books/* routes (requires valid JWT cookie)
-	books := s.router.Group("/books")
-	books.Use(auth.AuthRequiredHTML())
-
-	// Register routes for controllers
-	s.bookController.RegisterRoutes(books)
+	s.registerPublicRoutes()    // Register routes that are accessible without authentication
+	s.registerProtectedRoutes() // Register routes that require a valid JWT cookie
 
 	// start the HTTP server
 	return s.router.Run(s.address)
@@ -101,5 +95,16 @@ func (s *Server) registerPublicRoutes() {
 
 	// Public logout route
 	s.router.GET("/logout", authHTML.LogoutUser)
+}
 
+// registerProtectedRoutes defines all routes that require authentication.
+func (s *Server) registerProtectedRoutes() {
+	// Group all /books routes under a protected route group
+	books := s.router.Group("/books")
+
+	// Apply HTML JWT authentication middleware
+	books.Use(auth.AuthRequiredHTML())
+
+	// Register routes for controllers
+	s.bookController.RegisterRoutes(books)
 }
