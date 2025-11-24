@@ -5,6 +5,7 @@ import (
 	"bookmanager-go/internal/model"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -29,12 +30,13 @@ func (ac *AuthHTMLController) ShowRegisterPage(c *gin.Context) {
 func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 	email := c.PostForm("email")
 	password := c.PostForm("password")
+	bc := BookController{DB: ac.DB} // HTML renderer
 
 	// Validate input fields
 	if email == "" || password == "" {
-		bc := BookController{DB: ac.DB} // HTML renderer
 		bc.renderHTML(c, http.StatusBadRequest, "register.html", gin.H{
 			"Title":       "Register",
+			"PageTitle":   "Register",
 			"Message":     "Email and password are required.",
 			"MessageType": "warning",
 		})
@@ -45,10 +47,10 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 	hashed, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		log.Printf("Error hashing password: %v\n", err)
-		bc := BookController{DB: ac.DB} // HTML renderer
 		bc.renderHTML(c, http.StatusInternalServerError, "register.html", gin.H{
 			"Title":       "Register",
-			"Message":     "Internal error.",
+			"PageTitle":   "Register",
+			"Message":     "Internal error. Please try again later.",
 			"MessageType": "danger",
 		})
 		return
@@ -62,12 +64,25 @@ func (ac *AuthHTMLController) RegisterUser(c *gin.Context) {
 
 	// Save user to database
 	if err := ac.DB.Create(&user).Error; err != nil {
-		log.Printf("Error creating user: %v\n", err)
-		bc := BookController{DB: ac.DB} // HTML renderer
-		bc.renderHTML(c, http.StatusBadRequest, "register.html", gin.H{
+
+		// Expected case: duplicate email (unique constraint violation)
+		if strings.Contains(err.Error(), "UNIQUE") || strings.Contains(err.Error(), "unique") {
+			bc.renderHTML(c, http.StatusBadRequest, "register.html", gin.H{
+				"Title":       "Register",
+				"PageTitle":   "Register",
+				"Message":     "User with this email already exists.",
+				"MessageType": "warning",
+			})
+			return
+		}
+
+		// Unexpected DB error
+		log.Printf("Register error: %v\n", err)
+		bc.renderHTML(c, http.StatusInternalServerError, "register.html", gin.H{
 			"Title":       "Register",
-			"Message":     "User already exists.",
-			"MessageType": "warning",
+			"PageTitle":   "Register",
+			"Message":     "Internal error. Please try again later.",
+			"MessageType": "danger",
 		})
 		return
 	}
