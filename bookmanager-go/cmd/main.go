@@ -1,17 +1,26 @@
 package main
 
 import (
+	"bookmanager-go/internal/config"
 	"bookmanager-go/internal/model"
 	"bookmanager-go/internal/server"
 	"bookmanager-go/internal/service"
 	"fmt"
 	"log"
 
+	"github.com/joho/godotenv"
 	"gorm.io/gorm"
 )
 
 func main() {
 	fmt.Println("Hello bookmanager-go!")
+
+	// Initialize the environment loader with a custom load function (.env file)
+	loader := config.NewEnvLoader("config/app.env", func() error {
+		return godotenv.Load("config/app.env")
+	})
+
+	_ = loader
 
 	connector := &service.SQLiteConnector{DBPath: "books.db"}
 	db := service.InitDB(connector)
