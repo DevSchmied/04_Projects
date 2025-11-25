@@ -5,7 +5,7 @@
 
 # Environment inside internal/config
 internal/config/*.env
-!internal/config/app.example.env
+!internal/config/app.env.example
 
 # SQLite database
 *.db

@@ -20,6 +20,27 @@ http://localhost:8080/books
 
 This setup runs the full application (backend, templates, static assets, SQLite DB) inside a single Docker container, ensuring consistent behavior across all environments.
 
+### Environment Setup
+
+The application requires an environment file with sensitive configuration values.
+
+**Create your own environment file:**
+
+**Linux / macOS:**
+bash
+cp internal/config/app.env.example internal/config/app.env
+
+**Windows:**
+copy internal\config\app.env.example internal\config\app.env
+
+
+**Edit the file and set your secret:**
+JWT_SECRET=REPLACE_ME_WITH_A_SECRET_VALUE
+
+**app.env is excluded** from version control for security reasons.
+Only app.env.example is provided as a template.
+
+
 ### Features
 - Add, edit, delete, and list books 
 - User authentication system: Register, Login, Logout (JWT + httpOnly cookies)
