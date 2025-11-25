@@ -1,13 +1,11 @@
 package auth
 
 import (
+	"bookmanager-go/internal/config"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
-
-// TODO: Replace hardcoded secret with an environment variable (e.g., from .env file)
-var jwtSecret = []byte("SUPER_SECRET")
 
 // CreateToken generates a JWT for a given user ID.
 func CreateToken(userID uint) (string, error) {
@@ -17,12 +15,14 @@ func CreateToken(userID uint) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecret)
+	return token.SignedString([]byte(config.Cfg.JWTSecret))
 }
 
 // ValidateToken verifies and parses a JWT string.
 func ValidateToken(tokenString string) (*jwt.Token, error) {
+	secret := []byte(config.Cfg.JWTSecret)
+
 	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return secret, nil
 	})
 }
