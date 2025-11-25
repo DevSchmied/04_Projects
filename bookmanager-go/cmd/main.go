@@ -20,7 +20,10 @@ func main() {
 		return godotenv.Load("config/app.env")
 	})
 
-	_ = loader
+	// Load configuration with up to 3 retry attempts
+	if err := loader.LoadConfig(0, 3); err != nil {
+		log.Fatalf("Config error: %v", err)
+	}
 
 	connector := &service.SQLiteConnector{DBPath: "books.db"}
 	db := service.InitDB(connector)
