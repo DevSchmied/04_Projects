@@ -16,8 +16,8 @@ func main() {
 	fmt.Println("Hello bookmanager-go!")
 
 	// Initialize the environment loader with a custom load function (.env file)
-	loader := config.NewEnvLoader("config/app.env", func() error {
-		return godotenv.Load("config/app.env")
+	loader := config.NewEnvLoader("internal/config/app.env", func() error {
+		return godotenv.Load("internal/config/app.env")
 	})
 
 	// Load configuration with up to 3 retry attempts

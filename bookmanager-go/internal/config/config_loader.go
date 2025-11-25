@@ -47,5 +47,5 @@ func (e *EnvLoader) LoadConfig(attempt, maxAttempts int) error {
 	log.Printf("Error loading config (attempt %d): %v\n", attempt+1, err)
 
 	// Retry mechanism
-	return e.LoadConfig(attempt, maxAttempts)
+	return e.LoadConfig(attempt+1, maxAttempts)
 }
