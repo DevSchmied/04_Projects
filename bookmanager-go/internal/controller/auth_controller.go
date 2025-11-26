@@ -131,7 +131,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 			bc.renderHTML(c, http.StatusUnauthorized, "login.html", gin.H{
 				"Title":       "Login",
 				"PageTitle":   "Login",
-				"Message":     "User not found.",
+				"Message":     "Invalid credentials.",
 				"MessageType": "warning",
 			})
 			return
