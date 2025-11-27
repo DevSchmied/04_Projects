@@ -32,10 +32,11 @@ func (OSReader) Get(key string) string {
 }
 
 // NewEnvLoader initializes a new EnvLoader.
-func NewEnvLoader(path string, loadFunc func() error) *EnvLoader {
+func NewEnvLoader(path string, loadFunc func() error, reader EnvReader) *EnvLoader {
 	return &EnvLoader{
 		FilePath: path,
 		Load:     loadFunc,
+		Reader:   reader,
 	}
 }
 
