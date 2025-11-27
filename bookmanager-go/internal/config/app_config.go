@@ -4,5 +4,3 @@ package config
 type AppConfig struct {
 	JWTSecret string
 }
-
-var Cfg AppConfig

@@ -7,22 +7,30 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// JWTService kapselt alle JWT-bezogenen Operationen (Signieren, Validieren)
+type JWTService struct {
+	Secret string
+}
+
+// NewJWTService erstellt einen neuen JWTService auf Basis der geladenen AppConfig.
+func NewJWTService(cfg *config.AppConfig) *JWTService {
+	return &JWTService{Secret: cfg.JWTSecret}
+}
+
 // CreateToken generates a JWT for a given user ID.
-func CreateToken(userID uint) (string, error) {
+func (j *JWTService) CreateToken(userID uint) (string, error) {
 	claims := jwt.MapClaims{
 		"sub": userID,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(config.Cfg.JWTSecret))
+	return token.SignedString([]byte(j.Secret))
 }
 
 // ValidateToken verifies and parses a JWT string.
-func ValidateToken(tokenString string) (*jwt.Token, error) {
-	secret := []byte(config.Cfg.JWTSecret)
-
+func (j *JWTService) ValidateToken(tokenString string) (*jwt.Token, error) {
 	return jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secret, nil
+		return []byte(j.Secret), nil
 	})
 }

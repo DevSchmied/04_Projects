@@ -25,23 +25,25 @@ func NewEnvLoader(path string, loadFunc func() error) *EnvLoader {
 	}
 }
 
-// LoadConfig loads configuration recursively with a retry mechanism.
-func (e *EnvLoader) LoadConfig(attempt, maxAttempts int) error {
+// LoadConfig loads configuration recursively with a retry mechanism and returns AppConfig.
+func (e *EnvLoader) LoadConfig(attempt, maxAttempts int) (*AppConfig, error) {
 	if attempt >= maxAttempts {
-		return fmt.Errorf("failed to load configuration after %d attempts", maxAttempts)
+		return nil, fmt.Errorf("failed to load configuration after %d attempts", maxAttempts)
 	}
 
 	// Try to load .env
 	err := e.Load()
 	if err == nil {
 		// Read required fields
-		Cfg.JWTSecret = os.Getenv("JWT_SECRET")
-
-		if Cfg.JWTSecret == "" {
-			return fmt.Errorf("JWT_SECRET is missing in environment")
+		cfg := &AppConfig{
+			JWTSecret: os.Getenv("JWT_SECRET"),
 		}
 
-		return nil
+		if cfg.JWTSecret == "" {
+			return nil, fmt.Errorf("JWT_SECRET is missing in environment")
+		}
+
+		return cfg, nil
 	}
 
 	log.Printf("Error loading config (attempt %d): %v\n", attempt+1, err)

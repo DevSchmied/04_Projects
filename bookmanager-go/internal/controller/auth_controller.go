@@ -14,7 +14,8 @@ import (
 )
 
 type AuthHTMLController struct {
-	DB *gorm.DB
+	DB         *gorm.DB
+	JWTService *auth.JWTService
 }
 
 // ShowRegisterPage displays the registration form
@@ -160,7 +161,7 @@ func (ac *AuthHTMLController) LoginUser(c *gin.Context) {
 		return
 	}
 	// Create JWT token
-	token, err := auth.CreateToken(user.ID)
+	token, err := ac.JWTService.CreateToken(user.ID)
 	if err != nil {
 		log.Printf("Error creating JWT: %v\n", err)
 		bc.renderHTML(c, http.StatusInternalServerError, "login.html", gin.H{

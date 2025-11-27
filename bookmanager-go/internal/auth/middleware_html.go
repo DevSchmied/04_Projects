@@ -8,7 +8,7 @@ import (
 )
 
 // AuthRequiredHTML checks the JWT cookie for authentication and redirects to /login if invalid.
-func AuthRequiredHTML() gin.HandlerFunc {
+func AuthRequiredHTML(jwtService *JWTService) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Read JWT from cookie
 		tokenString, err := c.Cookie("jwt")
@@ -19,16 +19,20 @@ func AuthRequiredHTML() gin.HandlerFunc {
 			return
 		}
 
-		token, err := ValidateToken(tokenString)
+		token, err := jwtService.ValidateToken(tokenString)
 		if err != nil || !token.Valid {
 			c.Redirect(http.StatusSeeOther, "/login")
 			c.Abort()
 			return
 		}
 
-		claims := token.Claims.(jwt.MapClaims)
+		claims, ok := token.Claims.(jwt.MapClaims)
+		if !ok {
+			c.Redirect(http.StatusSeeOther, "/login")
+			c.Abort()
+			return
+		}
 		c.Set("userID", uint(claims["sub"].(float64)))
-
 		c.Next()
 	}
 }

@@ -14,6 +14,7 @@ import (
 type Server struct {
 	router         *gin.Engine
 	bookController controller.BookController
+	jwtService     *auth.JWTService
 	address        string
 	staticRoute    string
 	staticPath     string
@@ -21,7 +22,7 @@ type Server struct {
 }
 
 // NewServer creates a new Server instance with all dependencies injected.
-func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Server {
+func NewServer(db *gorm.DB, jwt *auth.JWTService, adr, templates, staticRoute, staticPath string) *Server {
 	r := gin.Default()
 
 	bc := controller.BookController{DB: db}
@@ -29,6 +30,7 @@ func NewServer(db *gorm.DB, adr, templates, staticRoute, staticPath string) *Ser
 	return &Server{
 		router:         r,
 		bookController: bc,
+		jwtService:     jwt,
 		address:        adr,
 		staticRoute:    staticRoute,
 		staticPath:     staticPath,
@@ -83,7 +85,10 @@ func formatDate(d time.Time) string {
 // registerPublicRoutes defines all routes that do not require authentication.
 func (s *Server) registerPublicRoutes() {
 	// Initialize HTML authentication controller
-	authHTML := controller.AuthHTMLController{DB: s.bookController.DB}
+	authHTML := controller.AuthHTMLController{
+		DB:         s.bookController.DB,
+		JWTService: s.jwtService,
+	}
 
 	// Public registration routes
 	s.router.GET("/register", authHTML.ShowRegisterPage)
@@ -103,7 +108,7 @@ func (s *Server) registerProtectedRoutes() {
 	books := s.router.Group("/books")
 
 	// Apply HTML JWT authentication middleware
-	books.Use(auth.AuthRequiredHTML())
+	books.Use(auth.AuthRequiredHTML(s.jwtService))
 
 	// Register routes for controllers
 	s.bookController.RegisterRoutes(books)

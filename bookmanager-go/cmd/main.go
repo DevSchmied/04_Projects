@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bookmanager-go/internal/auth"
 	"bookmanager-go/internal/config"
 	"bookmanager-go/internal/model"
 	"bookmanager-go/internal/server"
@@ -21,9 +22,12 @@ func main() {
 	})
 
 	// Load configuration with up to 3 retry attempts
-	if err := loader.LoadConfig(0, 3); err != nil {
+	cfg, err := loader.LoadConfig(0, 3)
+	if err != nil {
 		log.Fatalf("Config error: %v", err)
 	}
+
+	jwtService := auth.NewJWTService(cfg)
 
 	connector := &service.SQLiteConnector{DBPath: "books.db"}
 	db := service.InitDB(connector)
@@ -49,12 +53,20 @@ func main() {
 
 	// addTestData(db)
 
-	serverAddress := "0.0.0.0:8080"                                                         // Server listening address
-	staticRoute := "/static"                                                                // URL route for static files
-	staticPath := "./internal/view/static"                                                  // Local folder for static files
-	templatePath := "internal/view/templates/**/*.html"                                     // HTML templates location
-	appServer := server.NewServer(db, serverAddress, templatePath, staticRoute, staticPath) // Initialize server with dependencies
-	if err := appServer.Start(); err != nil {                                               // Start web server and handle startup errors
+	serverAddress := "0.0.0.0:8080"                     // Server listening address
+	staticRoute := "/static"                            // URL route for static files
+	staticPath := "./internal/view/static"              // Local folder for static files
+	templatePath := "internal/view/templates/**/*.html" // HTML templates location
+
+	appServer := server.NewServer(
+		db,
+		jwtService,
+		serverAddress,
+		templatePath,
+		staticRoute,
+		staticPath,
+	) // Initialize server with dependencies
+	if err := appServer.Start(); err != nil { // Start web server and handle startup errors
 		log.Fatalf("Server failed to start: %v", err)
 	}
 }
