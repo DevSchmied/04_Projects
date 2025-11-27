@@ -11,16 +11,16 @@ type ConfigLoader interface {
 	LoadConfig(attempt, maxAttempts int) error
 }
 
-// EnvReader abstracts environment variable access for testability.
-type EnvReader interface {
-	Get(key string) string
-}
-
-// EnvLoader loads environment variables using a custom load function.
+// EnvLoader loads configuration via injected Load function & environment reader.
 type EnvLoader struct {
 	FilePath string
 	Load     func() error
 	Reader   EnvReader
+}
+
+// EnvReader abstracts environment variable access for testability.
+type EnvReader interface {
+	Get(key string) string
 }
 
 // OSReader is the default implementation using os.Getenv.
