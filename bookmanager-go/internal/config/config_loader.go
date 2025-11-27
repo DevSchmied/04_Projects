@@ -20,6 +20,7 @@ type EnvReader interface {
 type EnvLoader struct {
 	FilePath string
 	Load     func() error
+	Reader   EnvReader
 }
 
 // OSReader is the default implementation using os.Getenv.
