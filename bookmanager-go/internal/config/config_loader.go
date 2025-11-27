@@ -51,7 +51,7 @@ func (e *EnvLoader) LoadConfig(attempt, maxAttempts int) (*AppConfig, error) {
 	if err == nil {
 		// Read required fields
 		cfg := &AppConfig{
-			JWTSecret: os.Getenv("JWT_SECRET"),
+			JWTSecret: e.Reader.Get("JWT_SECRET"),
 		}
 
 		if cfg.JWTSecret == "" {
