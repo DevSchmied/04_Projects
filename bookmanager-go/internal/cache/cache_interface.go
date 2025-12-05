@@ -1,9 +1,12 @@
 package cache
 
-import "bookmanager-go/internal/model"
+import (
+	"bookmanager-go/internal/model"
+	"context"
+)
 
 type BookCache interface {
-	GetBookList() ([]model.Book, error)
-	SetBookList([]model.Book) error
-	InvalidateBookList() error
+	GetBookList(ctx context.Context) ([]model.Book, error)
+	SetBookList(ctx context.Context, books []model.Book) error
+	InvalidateBookList(ctx context.Context) error
 }
