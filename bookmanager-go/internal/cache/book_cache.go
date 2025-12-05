@@ -62,3 +62,13 @@ func (c *RedisBookCache) SetBookList(ctx context.Context, books []model.Book) er
 	log.Println("Redis Set: book:list updated")
 	return nil
 }
+
+func (c *RedisBookCache) InvalidateBookList(ctx context.Context) error {
+	if err := c.rdb.Client.Del(ctx, bookListKey).Err(); err != nil {
+		log.Printf("Redis error on Del book:list: %v\n", err)
+		return err
+	}
+
+	log.Println("Redis Del: book:list deleted")
+	return nil
+}
