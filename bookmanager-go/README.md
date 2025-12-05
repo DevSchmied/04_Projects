@@ -5,15 +5,15 @@ Start it instantly with **Docker** — no manual setup required.
 
 ---
 
-### 🐳 Quick Start with Docker
+### Quick Start with Docker
 
 To run the application instantly on any system:
 
-# Clone the repository
+### Clone the repository
 git clone https://github.com/DevSchmied/bookmanager-go.git
 cd bookmanager-go
 
-# Build and start the container
+### Build and start the container
 docker compose up --build
 Then open your browser and navigate to:
 http://localhost:8080/books
