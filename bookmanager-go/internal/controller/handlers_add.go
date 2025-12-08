@@ -2,11 +2,13 @@ package controller
 
 import (
 	"bookmanager-go/internal/model"
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,6 +77,15 @@ func (bc *BookController) AddBook(c *gin.Context) {
 			"MessageType": "danger",
 		})
 		return
+	}
+
+	if bc.cache != nil {
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
+		defer cancel()
+
+		if err := bc.cache.InvalidateBookList(ctx); err != nil {
+			log.Printf("Cache invalidate error: %v", err)
+		}
 	}
 
 	// Redirect to list page
