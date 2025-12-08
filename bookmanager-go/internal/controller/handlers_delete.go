@@ -2,10 +2,12 @@ package controller
 
 import (
 	"bookmanager-go/internal/model"
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -105,6 +107,15 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 			"MessageType": "danger",
 		})
 		return
+	}
+
+	if bc.cache != nil {
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
+		defer cancel()
+
+		if err := bc.cache.InvalidateBookList(ctx); err != nil {
+			log.Printf("Cache invalidate error: %v\n", err)
+		}
 	}
 
 	// Redirect back to book list with success info
