@@ -2,6 +2,7 @@ package main
 
 import (
 	"bookmanager-go/internal/auth"
+	"bookmanager-go/internal/cache"
 	"bookmanager-go/internal/config"
 	"bookmanager-go/internal/model"
 	"bookmanager-go/internal/server"
@@ -62,14 +63,19 @@ func main() {
 	staticPath := "./internal/view/static"              // Local folder for static files
 	templatePath := "internal/view/templates/**/*.html" // HTML templates location
 
+	redisClient := cache.NewRedisClient("localhost:6379")
+	bookCache := cache.NewRedisBookCache(redisClient)
+
 	appServer := server.NewServer(
 		db,
+		bookCache,
 		jwtService,
 		serverAddress,
 		templatePath,
 		staticRoute,
 		staticPath,
-	) // Initialize server with dependencies
+	)
+	// Initialize server with dependencies
 	if err := appServer.Start(); err != nil { // Start web server and handle startup errors
 		log.Fatalf("Server failed to start: %v", err)
 	}
