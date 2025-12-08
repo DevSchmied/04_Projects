@@ -26,10 +26,8 @@ func (bc *BookController) ShowWelcomePage(c *gin.Context) {
 // GetAllBooks renders an HTML page listing all books in the database.
 func (bc *BookController) GetAllBooks(c *gin.Context) {
 
-	baseCtx := c.Request.Context()
-
 	if bc.cache != nil {
-		ctx, cancel := context.WithTimeout(baseCtx, 300*time.Millisecond)
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()
 
 		cachedBooks, err := bc.cache.GetBookList(ctx)
@@ -76,7 +74,7 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 	}
 
 	if bc.cache != nil {
-		ctx, cancel := context.WithTimeout(baseCtx, 300*time.Millisecond)
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()
 
 		if err := bc.cache.SetBookList(ctx, books); err != nil {
