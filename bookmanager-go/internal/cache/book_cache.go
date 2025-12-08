@@ -20,6 +20,9 @@ type RedisBookCache struct {
 	rdb *RedisClient
 }
 
+// The compile-time assertion ensures that RedisBookCache always satisfies BookCache.
+var _ BookCache = (*RedisBookCache)(nil)
+
 func NewRedisBookCache(rdb *RedisClient) *RedisBookCache {
 	return &RedisBookCache{rdb: rdb}
 }
