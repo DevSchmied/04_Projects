@@ -115,6 +115,8 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 
 		if err := bc.Cache.InvalidateBookList(ctx); err != nil {
 			log.Printf("Cache invalidate error: %v\n", err)
+		} else {
+			log.Println("Cache invalidated: book list cleared")
 		}
 	}
 
