@@ -2,6 +2,7 @@ package server
 
 import (
 	"bookmanager-go/internal/auth"
+	"bookmanager-go/internal/cache"
 	"bookmanager-go/internal/controller"
 	"html/template"
 	"time"
@@ -22,10 +23,13 @@ type Server struct {
 }
 
 // NewServer creates a new Server instance with all dependencies injected.
-func NewServer(db *gorm.DB, jwt *auth.JWTService, adr, templates, staticRoute, staticPath string) *Server {
+func NewServer(db *gorm.DB, bookCache cache.BookCache, jwt *auth.JWTService, adr, templates, staticRoute, staticPath string) *Server {
 	r := gin.Default()
 
-	bc := controller.BookController{DB: db}
+	bc := controller.BookController{
+		DB:    db,
+		Cache: bookCache,
+	}
 
 	return &Server{
 		router:         r,
