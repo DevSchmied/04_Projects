@@ -34,8 +34,9 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 
 		cachedBooks, err := bc.cache.GetBookList(ctx)
 		if err != nil {
-			log.Printf("...%v\n", err)
+			log.Printf("Cache error: %v", err)
 		} else if cachedBooks != nil {
+			log.Println("Cache HIT for book list")
 			// Render the list of cached books
 			bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
 				"Title":       "Book List",
@@ -72,6 +73,15 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 			"Books":       books,
 		})
 		return
+	}
+
+	if bc.cache != nil {
+		ctx, cancel := context.WithTimeout(baseCtx, 300*time.Millisecond)
+		defer cancel()
+
+		if err := bc.cache.SetBookList(ctx, books); err != nil {
+			log.Printf("Cache set error: %v", err)
+		}
 	}
 
 	// Render the list of books
