@@ -2,11 +2,13 @@ package controller
 
 import (
 	"bookmanager-go/internal/model"
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -23,6 +25,29 @@ func (bc *BookController) ShowWelcomePage(c *gin.Context) {
 
 // GetAllBooks renders an HTML page listing all books in the database.
 func (bc *BookController) GetAllBooks(c *gin.Context) {
+
+	baseCtx := c.Request.Context()
+
+	if bc.cache != nil {
+		ctx, cancel := context.WithTimeout(baseCtx, 300*time.Millisecond)
+		defer cancel()
+
+		cachedBooks, err := bc.cache.GetBookList(ctx)
+		if err != nil {
+			log.Printf("...%v\n", err)
+		} else if cachedBooks != nil {
+			// Render the list of cached books
+			bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
+				"Title":       "Book List",
+				"Description": "List of all books currently stored in your library.",
+				"Books":       cachedBooks,
+			})
+			return
+		} else {
+			log.Println("Cache miss for book list")
+		}
+	}
+
 	var books []model.Book
 	// Try to load all books from the database
 	if err := bc.DB.Find(&books).Error; err != nil {
