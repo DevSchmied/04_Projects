@@ -2,12 +2,14 @@ package controller
 
 import (
 	"bookmanager-go/internal/model"
+	"context"
 	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -173,7 +175,15 @@ func (bc *BookController) UpdateBook(c *gin.Context) {
 		return
 	}
 
-	// Success message after update
+	if bc.cache != nil {
+		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
+		defer cancel()
+
+		if err := bc.cache.InvalidateBookList(ctx); err != nil {
+			log.Printf("Cache invalidate error: %v", err)
+		}
+	}
+
 	log.Printf("Book with ID %d successfully updated.\n", id)
 	bc.renderHTML(c, http.StatusOK, "book_edit.html", gin.H{
 		"Title":       "Edit Book",
