@@ -27,6 +27,7 @@ func (bc *BookController) ShowWelcomePage(c *gin.Context) {
 func (bc *BookController) GetAllBooks(c *gin.Context) {
 
 	if bc.Cacher != nil {
+		// Try reading the book list from Redis cache.
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()
 
@@ -34,8 +35,8 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 		if err != nil {
 			log.Printf("Cache error: %v", err)
 		} else if cachedBooks != nil {
+			// Cache HIT: return books directly without querying the database.
 			log.Println("Cache HIT for book list")
-			// Render the list of cached books
 			bc.renderHTML(c, http.StatusOK, "books_list.html", gin.H{
 				"Title":       "Book List",
 				"Description": "List of all books currently stored in your library.",
@@ -73,6 +74,7 @@ func (bc *BookController) GetAllBooks(c *gin.Context) {
 		return
 	}
 
+	// After loading from DB, store the list in Redis for future requests.
 	if bc.Cacher != nil {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()

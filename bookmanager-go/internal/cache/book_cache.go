@@ -11,22 +11,24 @@ import (
 )
 
 const (
-	bookListKey = "book:list"
-	bookListTTL = 60 * time.Second
+	bookListKey = "book:list"      // Redis key under which book list is stored
+	bookListTTL = 60 * time.Second // TTL ensures automatic cache expiration
 )
 
-// implement interface BookCache
+// RedisBookCacher implements BookCacher
 type RedisBookCacher struct {
 	rdb *RedisClient
 }
 
-// The compile-time assertion ensures that RedisBookCacher always satisfies BookCache.
+// The compile-time assertion ensures that RedisBookCacher always satisfies BookCacher.
 var _ BookCacher = (*RedisBookCacher)(nil)
 
+// NewRedisBookCache returns a cache instance
 func NewRedisBookCacher(rdb *RedisClient) *RedisBookCacher {
 	return &RedisBookCacher{rdb: rdb}
 }
 
+// GetBookList retrieves the cached book list.
 func (c *RedisBookCacher) GetBookList(ctx context.Context) ([]model.Book, error) {
 	bookList, err := c.rdb.Client.Get(ctx, bookListKey).Result()
 	if err != nil {
@@ -49,6 +51,7 @@ func (c *RedisBookCacher) GetBookList(ctx context.Context) ([]model.Book, error)
 	return books, nil
 }
 
+// SetBookList stores the book list in Redis with TTL.
 func (c *RedisBookCacher) SetBookList(ctx context.Context, books []model.Book) error {
 	jsonBytes, err := json.Marshal(books)
 	if err != nil {
@@ -66,6 +69,8 @@ func (c *RedisBookCacher) SetBookList(ctx context.Context, books []model.Book) e
 	return nil
 }
 
+// InvalidateBookList removes the cached book list from Redis.
+// Called after Add / Update / Delete operations.
 func (c *RedisBookCacher) InvalidateBookList(ctx context.Context) error {
 	if err := c.rdb.Client.Del(ctx, bookListKey).Err(); err != nil {
 		log.Printf("Redis error on Del book:list: %v\n", err)

@@ -109,6 +109,7 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		return
 	}
 
+	// Invalidate cache after modifying book data.
 	if bc.Cacher != nil {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()
