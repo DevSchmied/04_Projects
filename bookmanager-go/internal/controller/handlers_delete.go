@@ -109,11 +109,11 @@ func (bc *BookController) DeleteBook(c *gin.Context) {
 		return
 	}
 
-	if bc.Cache != nil {
+	if bc.Cacher != nil {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 300*time.Millisecond)
 		defer cancel()
 
-		if err := bc.Cache.InvalidateBookList(ctx); err != nil {
+		if err := bc.Cacher.InvalidateBookList(ctx); err != nil {
 			log.Printf("Cache invalidate error: %v\n", err)
 		} else {
 			log.Println("Cache invalidated: book list cleared")

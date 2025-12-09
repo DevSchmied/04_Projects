@@ -23,12 +23,12 @@ type Server struct {
 }
 
 // NewServer creates a new Server instance with all dependencies injected.
-func NewServer(db *gorm.DB, bookCache cache.BookCache, jwt *auth.JWTService, adr, templates, staticRoute, staticPath string) *Server {
+func NewServer(db *gorm.DB, bookCache cache.BookCacher, jwt *auth.JWTService, adr, templates, staticRoute, staticPath string) *Server {
 	r := gin.Default()
 
 	bc := controller.BookController{
-		DB:    db,
-		Cache: bookCache,
+		DB:     db,
+		Cacher: bookCache,
 	}
 
 	return &Server{

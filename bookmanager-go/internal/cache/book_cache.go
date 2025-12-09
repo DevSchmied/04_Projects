@@ -16,18 +16,18 @@ const (
 )
 
 // implement interface BookCache
-type RedisBookCache struct {
+type RedisBookCacher struct {
 	rdb *RedisClient
 }
 
-// The compile-time assertion ensures that RedisBookCache always satisfies BookCache.
-var _ BookCache = (*RedisBookCache)(nil)
+// The compile-time assertion ensures that RedisBookCacher always satisfies BookCache.
+var _ BookCacher = (*RedisBookCacher)(nil)
 
-func NewRedisBookCache(rdb *RedisClient) *RedisBookCache {
-	return &RedisBookCache{rdb: rdb}
+func NewRedisBookCacher(rdb *RedisClient) *RedisBookCacher {
+	return &RedisBookCacher{rdb: rdb}
 }
 
-func (c *RedisBookCache) GetBookList(ctx context.Context) ([]model.Book, error) {
+func (c *RedisBookCacher) GetBookList(ctx context.Context) ([]model.Book, error) {
 	bookList, err := c.rdb.Client.Get(ctx, bookListKey).Result()
 	if err != nil {
 		if err == redis.Nil {
@@ -49,7 +49,7 @@ func (c *RedisBookCache) GetBookList(ctx context.Context) ([]model.Book, error) 
 	return books, nil
 }
 
-func (c *RedisBookCache) SetBookList(ctx context.Context, books []model.Book) error {
+func (c *RedisBookCacher) SetBookList(ctx context.Context, books []model.Book) error {
 	jsonBytes, err := json.Marshal(books)
 	if err != nil {
 		log.Printf("JSON error: failed to marshal book list: %v\n", err)
@@ -66,7 +66,7 @@ func (c *RedisBookCache) SetBookList(ctx context.Context, books []model.Book) er
 	return nil
 }
 
-func (c *RedisBookCache) InvalidateBookList(ctx context.Context) error {
+func (c *RedisBookCacher) InvalidateBookList(ctx context.Context) error {
 	if err := c.rdb.Client.Del(ctx, bookListKey).Err(); err != nil {
 		log.Printf("Redis error on Del book:list: %v\n", err)
 		return err

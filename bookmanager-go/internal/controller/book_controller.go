@@ -9,10 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-// Initial BookController struct with a database and a BookCache (RedisBookCache) dependencies
+// Initial BookController struct with a database and a BookCacher (RedisBookCache) dependencies
 type BookController struct {
-	DB    *gorm.DB
-	Cache cache.BookCache
+	DB     *gorm.DB
+	Cacher cache.BookCacher
 }
 
 // findBookByParam chooses the right search strategy based on provided parameters.

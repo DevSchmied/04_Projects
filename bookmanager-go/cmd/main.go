@@ -66,7 +66,7 @@ func main() {
 	redisClient := cache.NewRedisClient(cfg.RedisAddr)
 	defer redisClient.Client.Close()
 
-	bookCache := cache.NewRedisBookCache(redisClient)
+	bookCache := cache.NewRedisBookCacher(redisClient)
 
 	appServer := server.NewServer(
 		db,
