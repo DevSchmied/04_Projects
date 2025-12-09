@@ -64,6 +64,8 @@ func main() {
 	templatePath := "internal/view/templates/**/*.html" // HTML templates location
 
 	redisClient := cache.NewRedisClient("localhost:6379")
+	defer redisClient.Client.Close()
+
 	bookCache := cache.NewRedisBookCache(redisClient)
 
 	appServer := server.NewServer(
