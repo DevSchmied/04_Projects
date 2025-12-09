@@ -63,7 +63,7 @@ func main() {
 	staticPath := "./internal/view/static"              // Local folder for static files
 	templatePath := "internal/view/templates/**/*.html" // HTML templates location
 
-	redisClient := cache.NewRedisClient("localhost:6379")
+	redisClient := cache.NewRedisClient(cfg.RedisAddr)
 	defer redisClient.Client.Close()
 
 	bookCache := cache.NewRedisBookCache(redisClient)

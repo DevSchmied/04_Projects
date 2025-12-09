@@ -50,8 +50,15 @@ func (e *EnvLoader) LoadConfig(attempt, maxAttempts int) (*AppConfig, error) {
 	err := e.Load()
 	if err == nil {
 		// Read required fields
+		// Fallback
+		redisAddress := e.Reader.Get("REDIS_ADDR")
+		if redisAddress == "" {
+			redisAddress = "localhost:6379"
+		}
+
 		cfg := &AppConfig{
 			JWTSecret: e.Reader.Get("JWT_SECRET"),
+			RedisAddr: redisAddress,
 		}
 
 		if cfg.JWTSecret == "" {
