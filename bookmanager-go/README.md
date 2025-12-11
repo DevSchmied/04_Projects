@@ -5,96 +5,162 @@ Start it instantly with **Docker** — no manual setup required.
 
 ---
 
-### Quick Start with Docker
+## Quick Start with Docker
 
-To run the application instantly on any system:
+This project is fully containerized.  
+**No manual environment setup is required.**  
+Docker automatically creates all required configuration files inside the container.
 
-### Clone the repository
-git clone https://github.com/DevSchmied/bookmanager-go.git
-cd bookmanager-go
+### 1. Clone the repository
 
-### Build and start the container
+> Note: This project is part of a multi-project repository (`04_Projects`).
+> After cloning, navigate into the project directory before running Docker commands (the required `cd` command is shown below).
+
+```bash
+git clone https://github.com/DevSchmied/04_Projects.git
+cd 04_Projects/bookmanager-go
+```
+
+### 2. Build and start the container
+
+```bash
 docker compose up --build
-Then open your browser and navigate to:
+```
+
+Then open your browser:
+
+```
 http://localhost:8080/books
+```
 
-This setup runs the full application (backend, templates, static assets, SQLite DB) inside a single Docker container, ensuring consistent behavior across all environments.
+### How it works (important for reviewers)
 
-### Environment Setup
+- Docker uses a **multi-stage build**
+- During the build, it automatically creates:
 
-The application requires an environment file with sensitive configuration values.
+```
+internal/config/app.env
+```
 
-**Create your own environment file:**
+based on:
 
-**Linux / macOS:**
-bash
-cp internal/config/app.env.example internal/config/app.env
+```
+internal/config/app.env.example
+```
 
-**Windows:**
-copy internal\config\app.env.example internal\config\app.env
+- No manual steps are required for the user
+- The application runs in **release mode** and uses **SQLite** inside the container
+- This ensures that the project runs **on any machine**, independent of local configuration
 
+---
 
-**Edit the file and set your secret:**
-JWT_SECRET=REPLACE_ME_WITH_A_SECRET_VALUE
+## Optional: Enable Redis Caching
 
-**app.env is excluded** from version control for security reasons.
-Only app.env.example is provided as a template.
+Redis is **optional**.
+The application runs fully without Redis.
 
+To test the caching layer, start a Redis instance locally.
 
-### Features
+If Redis is unavailable or slow, the application **automatically falls back** to SQLite.
+
+---
+
+## Features
 - Add, edit, delete, and list books 
 - User authentication system: Register, Login, Logout (JWT + httpOnly cookies)
-- Search functionality 
-- Simple, responsive web interface (HTML + Bootstrap)  
-- Persistent storage via **SQLite** (optionally MySQL)  
-- Modular architecture with **SOLID principles**  
-- Unit tests following **AAA (Arrange–Act–Assert)** and **FIRST** principles  
+- Book search (via **Strategy Pattern**: ID or Title)
+- Simple, responsive web interface (**HTML + Bootstrap**)  
+- Persistent storage via **SQLite** (with optional MySQL support)
+- Modular architecture with **SOLID** and **Clean Architecture** principles  
+- Unit tests following **AAA (Arrange–Act–Assert)** and **FIRST** principles
+- **Redis caching layer** for performance demonstration (see below)
 
 ---
 
-### Tech Stack
-- **Language:** Go (Gin framework)  
-- **Frontend:** HTML / Bootstrap  
-- **Database:** SQLite (or MySQL)  
-- **ORM:** GORM  
-- **Authentication:** JWT tokens (Gin middleware, httpOnly cookies)
-- **Testing:** Go `testing` package with mocks and table-driven tests  
+## Tech Stack
+- **Go** (Gin framework)
+- **HTML / Bootstrap 5**
+- **GORM** ORM
+- **SQLite** (or MySQL)
+- **JWT Authentication**
+- **Redis** (cache layer)
+- **Docker / Docker Compose**
+- **Go Testing** with mocks and table-driven tests
 
 ---
 
-### Architecture Overview
-The project follows a **modular, layered design** inspired by **Clean Architecture**, featuring separation of concerns across the following layers:
+## Architecture Overview
+The project follows a layered, modular structure inspired by Clean Architecture.
 
-- **Controller Layer:** Handles HTTP requests via the Gin framework.  
-- **Service Layer:** (prepared for future business logic extensions).  
-- **Model Layer:** Defines entities using GORM.  
-- **View Layer:** Server-rendered HTML templates with Bootstrap 5.  
+bookmanager-go/
+├── cmd/                     # Application entry point
+│   └── main.go
+├── internal/
+│   ├── auth/                # JWT logic, authentication middleware
+│   ├── cache/               # Redis caching layer (BookList example)
+│   ├── config/              # Environment loader with retry mechanism
+│   ├── controller/          # HTTP handlers (HTML views)
+│   ├── model/               # GORM entities
+│   ├── server/              # Gin server setup, routing, DI
+│   └── service/             # DB initialization (SQLite connector)
+├── internal/view/
+│   ├── templates/           # HTML templates
+│   └── static/              # CSS, images, logos
 
-A key part of the design is the **use of the Strategy Pattern** to implement flexible and extensible  
-search functionality (e.g., search by ID or title). This pattern allows additional strategies —  
-such as searching by author or ISBN — to be easily added later without modifying controller logic.
 
 ---
 
-### Project Goal
-To practice **Clean Architecture** and **Go best practices** by building a modular, testable CRUD web application  
-that demonstrates:
-- Interface-driven development  
-- SOLID design principles  
-- Conscious use of **Design Patterns** (e.g., Strategy Pattern)  
-- Maintainable and reusable code structure  
+## Redis Caching Layer (Demonstration Feature)
+
+Caching is implemented for the **BookList endpoint**:
+
+```bash
+GET /books/list
+```
+
+BookManager-Go uses the **Cache-Aside pattern**:
+
+This is a **demonstration implementation** designed to show how Redis can be integrated into a Go project.
+Currently, caching is implemented **only for the BookList**, but the structure allows extending caching to other parts of the project in the future.
+
+BookManager-Go uses the **Cache-Aside pattern**.
+
+### Read Flow
+
+1. Check Redis for cached list
+2. **HIT**: return cached response
+3. **MISS**: load from DB → write to Redis → return result
+
+### Write Flow
+
+On creation, update, or deletion of a book:
+- Redis cache is invalidated
+- Next read regenerates it
+
+### TTL (Time-To-Live)
+
+Book list expires after **60 seconds**.
+
+### Fault Tolerance
+If Redis is:
+- slow
+- unreachable
+- misconfigured
+the operation is aborted after **300 ms**, logs are written, and SQLite is used instead.
+**The system remains fully functional**.
+
+---
+
+### Design Patterns Implemented
+- **Strategy Pattern**: For dynamic book search (by ID or title) 
+- **Interface-based architecture**
+- **Dependency Injection** via structured server initialization
 
 ---
 
 ### Visual Assets
 The visual assets (logos, icons, background watermark) were generated using **AI tools (ChatGPT / DALL·E by OpenAI)**.  
 They were created and used solely for **learning and demonstration purposes** within this **personal pet project**.
-
----
-
-### Design Patterns Implemented
-- **Strategy Pattern** → For dynamic book search (by ID or title)  
-  → Enables easy extension with new search strategies in the future  
 
 ---
 
