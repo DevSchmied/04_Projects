@@ -81,7 +81,7 @@ If Redis is unavailable or slow, the application **automatically falls back** to
 - **Go** (Gin framework)
 - **HTML / Bootstrap 5**
 - **GORM** ORM
-- **SQLite** (or MySQL)
+- **SQLite**
 - **JWT Authentication**
 - **Redis** (cache layer)
 - **Docker / Docker Compose**
@@ -92,6 +92,7 @@ If Redis is unavailable or slow, the application **automatically falls back** to
 ## Architecture Overview
 The project follows a layered, modular structure inspired by Clean Architecture.
 
+```bash
 bookmanager-go/
 ├── cmd/                     # Application entry point
 │   └── main.go
@@ -106,7 +107,7 @@ bookmanager-go/
 ├── internal/view/
 │   ├── templates/           # HTML templates
 │   └── static/              # CSS, images, logos
-
+```
 
 ---
 
@@ -151,18 +152,18 @@ the operation is aborted after **300 ms**, logs are written, and SQLite is used 
 
 ---
 
-### Design Patterns Implemented
+## Design Patterns Implemented
 - **Strategy Pattern**: For dynamic book search (by ID or title) 
 - **Interface-based architecture**
 - **Dependency Injection** via structured server initialization
 
 ---
 
-### Visual Assets
+## Visual Assets
 The visual assets (logos, icons, background watermark) were generated using **AI tools (ChatGPT / DALL·E by OpenAI)**.  
 They were created and used solely for **learning and demonstration purposes** within this **personal pet project**.
 
 ---
 
-### License
+## License
 This project is open-source and available for educational and portfolio purposes.
