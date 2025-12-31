@@ -64,6 +64,22 @@ https://github.com/DevSchmied/2025-12-02-url-status-and-pdf-report-service
 
 ---
 
+### Subscription Aggregation Service
+REST API for managing and aggregating users’ online subscriptions.
+
+**Highlights:**
+- CRUDL operations for subscriptions
+- Aggregation endpoint for total cost calculation by period
+- Filtering by user and service
+- PostgreSQL integration with migrations
+- Swagger API documentation
+- Docker-based deployment and CI pipeline
+
+Repository:  
+https://github.com/DevSchmied/subscription-aggregation-service
+
+---
+
 ## Purpose
 
 This repository acts as a **project index / portfolio entry point**.
