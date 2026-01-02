@@ -40,7 +40,7 @@ Go-based backend service for checking URL availability and generating PDF report
 - Clean, modular project structure
 
 Repository:  
-https://github.com/DevSchmied/2025-12-02-url-status-and-pdf-report-service
+https://github.com/DevSchmied/url-status-and-pdf-report-service-2025-12-02
 
 ---
 
