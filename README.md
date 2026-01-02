@@ -1,33 +1,13 @@
 # 04_Projects
 
-This repository contains my personal and experimental software projects.  
-It serves as a collection of pet projects, prototypes, and learning applications —  
-mostly developed with Go, but also with other languages and tools used for practice and experimentation.
-
-Each subfolder inside this repository represents a separate project with its own structure,  
-README file, and Git commit history.
-
-## Projects
-
-- **bookmanager-go**  
-  Go-based CRUD web application with Clean Architecture, JWT authentication, Redis caching, and Docker.  
-
-- **2025-12-02 — URL Status & PDF Report Service**  
-  Go-based web service that checks URL availability using a worker pool and generates PDF reports.  
-  Includes concurrent processing with goroutines and channels, JSON-based storage, and graceful shutdown handling.  
-  https://github.com/DevSchmied/2025-12-02-URLStatusAndPDFReportService
-
-
-**Purpose:**  
-To document my learning progress, demonstrate practical implementations, and explore different development patterns.
-# 04_Projects
-
 This repository serves as an index of my personal pet projects.
 
 It does **not** contain source code itself.  
-Instead, it provides an overview and direct links to standalone repositories where each project is developed and maintained independently.
+Instead, it provides an overview and direct links to standalone repositories,  
+where each project is developed and maintained independently.
 
-The goal of this repository is to present my projects in a clean, structured way and make navigation easier for reviewers, recruiters, and collaborators.
+The goal of this repository is to present my projects in a clean, structured way  
+and make navigation easier for reviewers, recruiters, and collaborators.
 
 ---
 
@@ -72,7 +52,7 @@ REST API for managing and aggregating users’ online subscriptions.
 - Aggregation endpoint for total cost calculation by period
 - Filtering by user and service
 - PostgreSQL integration with migrations
-- Swagger API documentation
+- Swagger / OpenAPI documentation
 - Docker-based deployment and CI pipeline
 
 Repository:  
@@ -82,11 +62,9 @@ https://github.com/DevSchmied/subscription-aggregation-service
 
 ## Purpose
 
-This repository acts as a **project index / portfolio entry point**.
+This repository acts as a **project index and portfolio entry point**.
 
 Each listed project:
 - lives in its own GitHub repository
-- has a clean commit history
-- is developed and maintained independently
-
-This structure reflects real-world development practices and makes individual projects easier to review and evaluate.
+- has a clean, focused commit history
+- follows real-world backend development practices
