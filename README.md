@@ -38,6 +38,13 @@ Go-based backend service for checking URL availability and generating PDF report
 - PDF report generation
 - Graceful shutdown (SIGINT/SIGTERM)
 - Clean, modular project structure
+- UML-based system design and documentation
+
+**UML & Design Documentation:**
+- Use Case Diagram
+- Activity Diagram
+- Package Diagram
+(created with Dia to model system behavior, workflows, and component structure)
 
 Repository:  
 https://github.com/DevSchmied/url-status-and-pdf-report-service-2025-12-02
